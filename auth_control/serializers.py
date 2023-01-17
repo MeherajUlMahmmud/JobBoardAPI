@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
-from user_control.models import ApplicantModel, OrganizationModel, UserModel
+from user_control.models import UserModel
 
 
 class RegisterSerializer(serializers.ModelSerializer):
