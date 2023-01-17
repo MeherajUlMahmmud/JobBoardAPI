@@ -21,6 +21,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'auth_control.apps.AuthControlConfig',
     'user_control.apps.UserControlConfig',
+    'job_control.apps.JobControlConfig',
 
     'rest_framework',
     'rest_framework.authtoken',
