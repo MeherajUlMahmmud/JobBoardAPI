@@ -52,15 +52,15 @@ class LoginAPIView(APIView):
 		token = Token.objects.get_or_create(user=user)[0]
 		if user:
 			user_data = UserModelSerializer(user).data
-			if user.is_applicant:
-				applicant = ApplicantModel.objects.get(user=user)
-				serialized_applicant = ApplicantModelSerializer(applicant).data
-				user_data['applicant'] = serialized_applicant
-			elif user.is_organization:
-				organization = OrganizationModel.objects.get(user=user)
-				serialized_organization = OrganizationModelSerializer(organization).data
-				user_data['organization'] = serialized_organization
-			return Response({'user': user_data, "token": token.key, }, status=HTTP_200_OK)
+		# 	if user.is_applicant:
+		# 		applicant = ApplicantModel.objects.get(user=user)
+		# 		serialized_applicant = ApplicantModelSerializer(applicant).data
+		# 		return Response({'data': serialized_applicant, "token": token.key, }, status=HTTP_200_OK)
+		# 	elif user.is_organization:
+		# 		organization = OrganizationModel.objects.get(user=user)
+		# 		serialized_organization = OrganizationModelSerializer(organization).data
+		# 		return Response({'data': serialized_organization, "token": token.key, }, status=HTTP_200_OK)
+			return Response({'data': user_data, "token": token.key, }, status=HTTP_200_OK)
 		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
