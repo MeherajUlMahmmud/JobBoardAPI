@@ -1,18 +1,17 @@
 from rest_framework import serializers
 
 from exam_control.models import ExamModel, QuestionModel, OptionModel, ApplicantResponseModel
-from job_control.serializer import JobDetailSerializer
 from user_control.serializers import OrganizationModelSerializer, ApplicantModelSerializer
 
 
-class ExamGetSerializer(serializers.ModelSerializer):
+class ExamModelGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamModel
         fields = ('uuid', 'organization', 'job', 'name', 'description', 'allocated_time', 'total_marks', 'pass_marks')
         depth = 1
 
 
-class ExamPostSerializer(serializers.ModelSerializer):
+class ExamModelPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamModel
         fields = ('uuid', 'organization', 'job', 'name', 'description', 'allocated_time', 'total_marks', 'pass_marks')
@@ -39,14 +38,14 @@ class ExamPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class QuestionGetSerializer(serializers.ModelSerializer):
+class QuestionModelGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionModel
-        fields = ('uuid', 'exam', 'question', 'marks', 'type')
+        fields = ('uuid', 'exam', 'question', 'marks', 'type', 'options')
         depth = 1
 
 
-class QuestionPostSerializer(serializers.ModelSerializer):
+class QuestionModelPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionModel
         fields = ('uuid', 'exam', 'question', 'marks', 'type')
@@ -68,29 +67,31 @@ class QuestionPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class OptionModelSerializer(serializers.ModelSerializer):
+class OptionModelGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = OptionModel
         fields = ['uuid', 'option', 'is_correct']
         depth = 1
 
 
-class OptionCreateSerializer(serializers.ModelSerializer):
+class OptionModelPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = OptionModel
         fields = ['uuid', 'question', 'option', 'is_correct']
 
-    def save(self, **kwargs):
+    def create(self, validated_data):
         option = OptionModel.objects.create(
             question=self.validated_data['question'],
             option=self.validated_data['option'],
             is_correct=self.validated_data['is_correct'],
         )
-        # add option to question
-        question = self.validated_data['question']
-        question.options.add(option)
-
         return option
+
+    def update(self, instance, validated_data):
+        instance.option = validated_data.get('option', instance.option)
+        instance.is_correct = validated_data.get('is_correct', instance.is_correct)
+        instance.save()
+        return instance
 
 
 class ApplicantResponseDetailSerializer(serializers.ModelSerializer):

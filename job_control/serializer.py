@@ -60,18 +60,6 @@ class JobModelPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class JobDetailSerializer(serializers.ModelSerializer):
-    organization = serializers.SerializerMethodField()
-
-    class Meta:
-        model = JobModel
-        fields = ('uuid', 'organization', 'title', 'description', 'department', 'location')
-
-    def get_organization(self, obj):
-        print(obj.organization)
-        return OrganizationModelSerializer(obj.organization).data
-
-
 class JobTypeJobSerializer(serializers.ModelSerializer):
     job_type = serializers.SerializerMethodField()
 

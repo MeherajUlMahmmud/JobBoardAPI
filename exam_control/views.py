@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.views import APIView
 
-from exam_control.models import ExamModel, QuestionModel, ApplicantResponseModel
-from exam_control.serializers import ExamGetSerializer, ExamPostSerializer, QuestionGetSerializer, QuestionPostSerializer, OptionModelSerializer, \
+from exam_control.models import ExamModel, QuestionModel, ApplicantResponseModel, OptionModel
+from exam_control.serializers import ExamModelGetSerializer, ExamModelPostSerializer, QuestionModelGetSerializer, QuestionModelPostSerializer, OptionModelGetSerializer, OptionModelPostSerializer, \
     ApplicantResponseDetailSerializer
 from job_control.models import JobModel, JobApplicationModel
 
@@ -19,7 +19,7 @@ class ExamAPIView(APIView):
             if job_id and exam_id:
                 exam = ExamModel.objects.get(uuid=exam_id, job__uuid=job_id, organization=request.user.organization)
                 if exam:
-                    exam_serializer = ExamGetSerializer(exam)
+                    exam_serializer = ExamModelGetSerializer(exam)
                     return Response(exam_serializer.data, status=HTTP_200_OK)
                 else:
                     return Response({'error': 'Exam does not exist'}, status=HTTP_400_BAD_REQUEST)
@@ -27,14 +27,14 @@ class ExamAPIView(APIView):
                 job = JobModel.objects.get(uuid=job_id, organization=request.user.organization)
                 if job:
                     exams = ExamModel.objects.filter(job=job)
-                    exam_serializer = ExamGetSerializer(exams, many=True)
+                    exam_serializer = ExamModelGetSerializer(exams, many=True)
                     return Response(exam_serializer.data, status=HTTP_200_OK)
                 else:
                     return Response({'error': 'Job does not exist'}, status=HTTP_400_BAD_REQUEST)
             elif exam_id:
                 exam = ExamModel.objects.get(uuid=exam_id, organization=request.user.organization)
                 if exam:
-                    exam_serializer = ExamGetSerializer(exam)
+                    exam_serializer = ExamModelGetSerializer(exam)
                     return Response(exam_serializer.data, status=HTTP_200_OK)
                 else:
                     return Response({'error': 'Exam does not exist'}, status=HTTP_400_BAD_REQUEST)
@@ -49,7 +49,7 @@ class ExamAPIView(APIView):
             organization = request.user.organization
             job = JobModel.objects.get(uuid=job_id, organization=organization)
             if job:
-                exam_serializer = ExamPostSerializer(data={
+                exam_serializer = ExamModelPostSerializer(data={
                     'organization': organization.uuid,
                     'job': job_id,
                     'name': request.data.get('name'),
@@ -73,7 +73,7 @@ class ExamAPIView(APIView):
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, organization=request.user.organization)
             if exam:
-                exam_serializer = ExamPostSerializer(exam, data={
+                exam_serializer = ExamModelPostSerializer(exam, data={
                     'job': exam.job.uuid,
                     'organization': request.user.organization.uuid,
                     'name': request.data.get('name'),
@@ -113,19 +113,25 @@ class QuestionAPIView(APIView):
         if exam_id and question_id:
             question = QuestionModel.objects.get(uuid=question_id, exam__uuid=exam_id)
             if question:
-                question_serializer = QuestionGetSerializer(question)
+                question_serializer = QuestionModelGetSerializer(question)
                 return Response(question_serializer.data, status=HTTP_200_OK)
             else:
                 return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
         elif exam_id:
             exam = ExamModel.objects.get(uuid=exam_id)
-            questions = QuestionModel.objects.filter(exam=exam)
-            serializer = QuestionGetSerializer(questions, many=True)
-            return Response(serializer.data, status=HTTP_200_OK)
+            if exam:
+                questions = QuestionModel.objects.filter(exam=exam)
+                question_serializer = QuestionModelGetSerializer(questions, many=True)
+                return Response(question_serializer.data, status=HTTP_200_OK)
+            else:
+                return Response({'error': 'Exam does not exist'}, status=HTTP_400_BAD_REQUEST)
         elif question_id:
             question = QuestionModel.objects.get(uuid=question_id)
-            serializer = QuestionGetSerializer(question)
-            return Response(serializer.data, status=HTTP_200_OK)
+            if question:
+                question_serializer = QuestionModelGetSerializer(question)
+                return Response(question_serializer.data, status=HTTP_200_OK)
+            else:
+                return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'No exam or question id provided'}, status=HTTP_400_BAD_REQUEST)
 
@@ -134,7 +140,7 @@ class QuestionAPIView(APIView):
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, is_active=True, is_deleted=False)
             if exam:
-                question_serializer = QuestionPostSerializer(data={
+                question_serializer = QuestionModelPostSerializer(data={
                     'exam': exam_id,
                     'question': request.data.get('question'),
                     'type': request.data.get('type'),
@@ -155,7 +161,7 @@ class QuestionAPIView(APIView):
         if request.user.is_organization:
             question = QuestionModel.objects.get(uuid=question_id)
             if question:
-                question_serializer = QuestionPostSerializer(question, data={
+                question_serializer = QuestionModelPostSerializer(question, data={
                     'exam': question.exam.uuid,
                     'question': request.data.get('question'),
                     'type': request.data.get('type'),
@@ -182,39 +188,72 @@ class QuestionAPIView(APIView):
                 return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
-        
+
 
 class OptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         question_id = request.GET.get('question_id')
-        if question_id:
-            question = QuestionModel.objects.get(uuid=question_id)
-            serializer = OptionModelSerializer(question.options, many=True)
+        question = QuestionModel.objects.get(uuid=question_id)
+        if question:
+            options = OptionModel.objects.filter(question=question)
+            serializer = OptionModelGetSerializer(options, many=True)
             return Response(serializer.data, status=HTTP_200_OK)
         else:
-            return Response({'error': 'No question id provided'}, status=HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
 
-    # def post(self, request):
-    #     question_id = request.data.get('question_id')
-    #     if request.user.is_organization:
-    #         question = QuestionModel.objects.get(uuid=question_id, is_active=True, is_deleted=False)
-    #         if question:
-    #             option_serializer = OptionCreateSerializer(data={
-    #                 'question': question_id,
-    #                 'option': request.data.get('option'),
-    #                 'is_correct': request.data.get('is_correct'),
-    #             })
-    #             if option_serializer.is_valid():
-    #                 option_serializer.save()
-    #                 return Response(option_serializer.data, status=HTTP_201_CREATED)
-    #             else:
-    #                 return Response(option_serializer.errors, status=HTTP_400_BAD_REQUEST)
-    #         else:
-    #             return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
-    #     else:
-    #         return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        question_id = request.data.get('question_id')
+        if request.user.is_organization:
+            question = QuestionModel.objects.get(uuid=question_id, is_active=True, is_deleted=False)
+            if question:
+                option_serializer = OptionModelPostSerializer(data={
+                    'question': question_id,
+                    'option': request.data.get('option'),
+                    'is_correct': request.data.get('is_correct'),
+                })
+                if option_serializer.is_valid():
+                    option_serializer.create(option_serializer.validated_data)
+                    return Response(option_serializer.data, status=HTTP_201_CREATED)
+                else:
+                    return Response(option_serializer.errors, status=HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        option_id = request.GET.get('option_id')
+        if request.user.is_organization:
+            option = OptionModel.objects.get(uuid=option_id)
+            if option:
+                option_serializer = OptionModelPostSerializer(option, data={
+                    'question': option.question.uuid,
+                    'option': request.data.get('option'),
+                    'is_correct': request.data.get('is_correct'),
+                })
+                if option_serializer.is_valid():
+                    option_serializer.update(option, option_serializer.validated_data)
+                    return Response(option_serializer.data, status=HTTP_201_CREATED)
+                else:
+                    return Response(option_serializer.errors, status=HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Option does not exist'}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        option_id = request.GET.get('option_id')
+        if request.user.is_organization:
+            option = OptionModel.objects.get(uuid=option_id)
+            if option:
+                option.delete()
+                return Response({'success': 'Option deleted successfully'}, status=HTTP_200_OK)
+            else:
+                return Response({'error': 'Option does not exist'}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
 
 class ApplicantResponseAPIView(APIView):
