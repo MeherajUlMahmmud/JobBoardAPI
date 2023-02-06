@@ -9,5 +9,5 @@ class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta: # This is an abstract class and will not be created in the database
+    class Meta:  # This is an abstract class and will not be created in the database
         abstract = True
