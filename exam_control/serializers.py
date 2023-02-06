@@ -5,80 +5,45 @@ from job_control.serializer import JobDetailSerializer
 from user_control.serializers import OrganizationModelSerializer, ApplicantModelSerializer
 
 
-class ExamSerializer(serializers.ModelSerializer):
+class ExamGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamModel
-        # fields = '__all__'
-        fields = ('uuid', 'job', 'name', 'description', 'allocated_time', 'total_marks', 'pass_marks')
-        depth = 1  # This is the magic line that will allow us to get the related data
+        fields = ('uuid', 'organization', 'job', 'name', 'description', 'allocated_time', 'total_marks', 'pass_marks')
+        depth = 1
 
 
-class ExamCreateSerializer(serializers.ModelSerializer):
+class ExamPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExamModel
         fields = ('uuid', 'organization', 'job', 'name', 'description', 'allocated_time', 'total_marks', 'pass_marks')
 
-    def save(self, **kwargs):
+    def create(self, validated_data):
         exam = ExamModel.objects.create(
             organization=self.validated_data['organization'],
             job=self.validated_data['job'],
             name=self.validated_data['name'],
-            description=self.validated_data['description'],
-            allocated_time=self.validated_data['allocated_time'],
-            # total_marks=self.validated_data['total_marks'],
-            pass_marks=self.validated_data['pass_marks'],
+            description=self.validated_data['description'] if self.validated_data['description'] else '',
+            allocated_time=self.validated_data['allocated_time'] if self.validated_data['allocated_time'] else 0,
+            total_marks=self.validated_data['total_marks'] if self.validated_data['total_marks'] else 0,
+            pass_marks=self.validated_data['pass_marks'] if self.validated_data['pass_marks'] else 0,
         )
         return exam
 
-
-class ExamDetailSerializer(serializers.ModelSerializer):
-    organization = serializers.SerializerMethodField()
-    job = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ExamModel
-        fields = '__all__'
-        depth = 1  # This is the magic line that will allow us to get the related data
-
-    def get_organization(self, obj):
-        return OrganizationModelSerializer(obj.organization).data
-
-    def get_job(self, obj):
-        return JobDetailSerializer(obj.job).data
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.allocated_time = validated_data.get('allocated_time', instance.allocated_time)
+        instance.total_marks = validated_data.get('total_marks', instance.total_marks)
+        instance.pass_marks = validated_data.get('pass_marks', instance.pass_marks)
+        instance.save()
+        return instance
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    pass
-
-
-class QuestionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionModel
         fields = ('uuid', 'exam', 'question', 'marks', 'type')
-
-    def save(self, **kwargs):
-        question = QuestionModel.objects.create(
-            exam=self.validated_data['exam'],
-            question=self.validated_data['question'],
-            type=self.validated_data['type'],
-            marks=self.validated_data['marks'],
-        )
-        return question
-
-
-class QuestionDetailSerializer(serializers.ModelSerializer):
-    exam = serializers.SerializerMethodField()
-    options = serializers.SerializerMethodField()
-
-    class Meta:
-        model = QuestionModel
-        fields = ['uuid', 'question', 'exam', 'options', 'type', 'marks']
-
-    def get_exam(self, obj):
-        return ExamSerializer(obj.exam).data
-
-    def get_options(self, obj):
-        return OptionModelSerializer(obj.options, many=True).data
+        depth = 1
 
 
 class OptionModelSerializer(serializers.ModelSerializer):
@@ -114,8 +79,8 @@ class ApplicantResponseDetailSerializer(serializers.ModelSerializer):
         model = ApplicantResponseModel
         fields = ['uuid', 'exam', 'applicant', 'total_marks', 'start_time', 'submission_time', 'is_submitted', 'is_passed', 'is_late']
 
-    def get_exam(self, obj):
-        return ExamDetailSerializer(obj.exam).data
+    # def get_exam(self, obj):
+    #     return ExamDetailSerializer(obj.exam).data
 
     def get_applicant(self, obj):
         return ApplicantModelSerializer(obj.applicant).data
