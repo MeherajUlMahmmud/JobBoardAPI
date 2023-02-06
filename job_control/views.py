@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from job_control.models import JobTypeJobModel, JobTypeModel, JobModel, JobApplicationModel
-from job_control.serializer import JobTypeSerializer, JobCreateSerializer, JobDetailSerializer, JobTypeJobSerializer, \
+from job_control.serializer import JobModelGetSerializer, JobModelPostSerializer,JobTypeSerializer, JobTypeJobSerializer, \
     JobApplicationCreateSerializer, JobApplicationDetailSerializer
 from user_control.models import UserModel, ApplicantModel
 
@@ -24,81 +24,88 @@ class JobAPIView(APIView):
 
     def get(self, request):
         page = request.GET.get('page')
+        job_id = request.GET.get('job_id')
         organization = request.GET.get('organization')
         # job_type = request.GET.get('job_type')
 
-        if organization:
+        if job_id and organization:
+            jobs = JobModel.objects.filter(uuid=job_id, organization=organization)
+        elif organization:
             jobs = JobModel.objects.filter(organization=organization)
-        # elif job_type:
-        # 	jobs = JobModel.objects.filter(job_type_jobs__job_type=job_type)
+        elif job_id:
+            jobs = JobModel.objects.filter(uuid=job_id)
         else:
             jobs = JobModel.objects.all()
-        job_serializer = JobDetailSerializer(jobs, many=True)
+
+        job_serializer = JobModelGetSerializer(jobs, many=True)
         for job in job_serializer.data:
             job_type_jobs = JobTypeJobModel.objects.filter(job=job['uuid'])
             job['job_types'] = JobTypeJobSerializer(job_type_jobs, many=True).data
         return Response(job_serializer.data, status=HTTP_200_OK)
 
     def post(self, request):
-        organization = request.data.get('organization')
-        title = request.data.get('title')
-        description = request.data.get('description')
-        department = request.data.get('department')
-        location = request.data.get('location')
-        types = request.data.get('types')
+        if request.user.is_organization:
+            organization = request.user.organization
+            types = request.data.get('types')
 
-        if types is None or len(types) < 1:
-            return Response({'error': 'Job must have at least one type'}, status=HTTP_400_BAD_REQUEST)
-        types = types[1:-1].split(', ')
+            if types is None or len(types) < 1:
+                return Response({'error': 'Job must have at least one type'}, status=HTTP_400_BAD_REQUEST)
+            types = types[1:-1].split(', ')
+            types_list = [JobTypeModel.objects.get(uuid=type_id) for type_id in types]
+            job_serializer = JobModelPostSerializer(data={
+                'organization': organization.uuid,
+                'title': request.data.get('title'),
+                'description': request.data.get('description'),
+                'department': request.data.get('department'),
+                'location': request.data.get('location'),
+            })
+            if job_serializer.is_valid():
+                job = job_serializer.create(job_serializer.validated_data)
 
-        types_list = [JobTypeModel.objects.get(uuid=type_id) for type_id in types]
+                for type in types_list:
+                    JobTypeJobModel.objects.create(job=job, job_type=type)
 
-        job_serializer = JobCreateSerializer(data={
-            'organization': organization,
-            'title': title,
-            'description': description,
-            'department': department,
-            'location': location,
-        })
-        if job_serializer.is_valid():
-            job = job_serializer.save()
+                job_serializer = JobModelPostSerializer(job).data
+                return Response(job_serializer, status=HTTP_201_CREATED)
+            return Response(job_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-            job_type_jobs = []
-            for type in types_list:
-                job_type_jobs.append(JobTypeJobModel.objects.create(job=job, job_type=type))
+    def put(self, request):
+        job_id = request.GET.get('job_id')
+        if request.user.is_organization:
+            organization = request.user.organization
+            job = JobModel.objects.get(uuid=job_id, organization=organization)
+            if job:
+                types = request.data.get('types')
 
-            return Response(job_serializer.data, status=HTTP_201_CREATED)
-        return Response(job_serializer.errors, status=HTTP_400_BAD_REQUEST)
+                if types is None or len(types) < 1:
+                    return Response({'error': 'Job must have at least one type'}, status=HTTP_400_BAD_REQUEST)
+                types = types[1:-1].split(', ')
+                types_list = [JobTypeModel.objects.get(uuid=type_id) for type_id in types]
+                job_serializer = JobModelPostSerializer(job, data={
+                    'organization': request.data.get('organization'),
+                    'title': request.data.get('title'),
+                    'description': request.data.get('description'),
+                    'department': request.data.get('department'),
+                    'location': request.data.get('location'),
+                })
+                if job_serializer.is_valid():
+                    job = job_serializer.update(job, job_serializer.validated_data)
 
-    def patch(self, request):
-        uuid = request.data.get('uuid')
-        title = request.data.get('title')
-        description = request.data.get('description')
-        department = request.data.get('department')
-        location = request.data.get('location')
-        types = request.data.get('types')
+                    job_type_jobs = JobTypeJobModel.objects.filter(job=job)
+                    job_type_jobs.delete()
 
-        if types is None or len(types) < 1:
-            return Response({'error': 'Job must have at least one type'}, status=HTTP_400_BAD_REQUEST)
-        types = types[1:-1].split(', ')
+                    for type in types_list:
+                        JobTypeJobModel.objects.create(job=job, job_type=type)
 
-        types_list = [JobTypeModel.objects.get(uuid=type_id) for type_id in types]
-
-        job = JobModel.objects.get(uuid=uuid)
-        job.title = title
-        job.description = description
-        job.department = department
-        job.location = location
-        job.save()
-
-        job_type_jobs = JobTypeJobModel.objects.filter(job=job)
-        job_type_jobs.delete()
-
-        for type in types_list:
-            JobTypeJobModel.objects.create(job=job, job_type=type)
-
-        job_serializer = JobDetailSerializer(job)
-        return Response(job_serializer.data, status=HTTP_200_OK)
+                    job_serializer = JobModelPostSerializer(job).data
+                    return Response(job_serializer, status=HTTP_201_CREATED)
+                return Response(job_serializer.errors, status=HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Job not found'}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
 
 class JobApplicationAPIView(APIView):

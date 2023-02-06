@@ -11,20 +11,53 @@ class JobTypeSerializer(serializers.ModelSerializer):
         fields = ('uuid', 'name',)
 
 
-class JobCreateSerializer(serializers.ModelSerializer):
+class JobModelGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobModel
+        fields = ('uuid', 'organization', 'title', 'description', 'department', 'location')
+        depth = 1
+
+    def create(self, validated_data):
+        job = JobModel.objects.create(
+            organization=validated_data['organization'],
+            title=validated_data['title'],
+            description=validated_data['description'],
+            department=validated_data['department'],
+            location=validated_data['location'],
+        )
+        return job
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.department = validated_data.get('department', instance.department)
+        instance.location = validated_data.get('location', instance.location)
+        instance.save()
+        return instance
+
+
+class JobModelPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobModel
         fields = ('uuid', 'organization', 'title', 'description', 'department', 'location')
 
-    def save(self, **kwargs):
+    def create(self, validated_data):
         job = JobModel.objects.create(
-            organization=self.validated_data['organization'],
-            title=self.validated_data['title'],
-            description=self.validated_data['description'],
-            department=self.validated_data['department'],
-            location=self.validated_data['location'],
+            organization=validated_data['organization'],
+            title=validated_data['title'],
+            description=validated_data['description'],
+            department=validated_data['department'],
+            location=validated_data['location'],
         )
         return job
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.department = validated_data.get('department', instance.department)
+        instance.location = validated_data.get('location', instance.location)
+        instance.save()
+        return instance
 
 
 class JobDetailSerializer(serializers.ModelSerializer):
