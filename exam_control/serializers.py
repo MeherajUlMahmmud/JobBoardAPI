@@ -39,11 +39,33 @@ class ExamPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionModel
         fields = ('uuid', 'exam', 'question', 'marks', 'type')
         depth = 1
+
+
+class QuestionPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionModel
+        fields = ('uuid', 'exam', 'question', 'marks', 'type')
+
+    def create(self, validated_data):
+        question = QuestionModel.objects.create(
+            exam=self.validated_data['exam'],
+            question=self.validated_data['question'],
+            marks=self.validated_data['marks'] if self.validated_data['marks'] else 0,
+            type=self.validated_data['type'],
+        )
+        return question
+
+    def update(self, instance, validated_data):
+        instance.question = validated_data.get('question', instance.question)
+        instance.marks = validated_data.get('marks', instance.marks)
+        instance.type = validated_data.get('type', instance.type)
+        instance.save()
+        return instance
 
 
 class OptionModelSerializer(serializers.ModelSerializer):

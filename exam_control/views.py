@@ -4,7 +4,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CR
 from rest_framework.views import APIView
 
 from exam_control.models import ExamModel, QuestionModel, ApplicantResponseModel
-from exam_control.serializers import ExamGetSerializer, ExamPostSerializer, QuestionSerializer, OptionModelSerializer, \
+from exam_control.serializers import ExamGetSerializer, ExamPostSerializer, QuestionGetSerializer, QuestionPostSerializer, OptionModelSerializer, \
     ApplicantResponseDetailSerializer
 from job_control.models import JobModel, JobApplicationModel
 
@@ -110,14 +110,21 @@ class QuestionAPIView(APIView):
     def get(self, request):
         exam_id = request.GET.get('exam_id')
         question_id = request.GET.get('question_id')
-        if exam_id:
+        if exam_id and question_id:
+            question = QuestionModel.objects.get(uuid=question_id, exam__uuid=exam_id)
+            if question:
+                question_serializer = QuestionGetSerializer(question)
+                return Response(question_serializer.data, status=HTTP_200_OK)
+            else:
+                return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
+        elif exam_id:
             exam = ExamModel.objects.get(uuid=exam_id)
             questions = QuestionModel.objects.filter(exam=exam)
-            serializer = QuestionSerializer(questions, many=True)
+            serializer = QuestionGetSerializer(questions, many=True)
             return Response(serializer.data, status=HTTP_200_OK)
         elif question_id:
             question = QuestionModel.objects.get(uuid=question_id)
-            serializer = QuestionSerializer(question)
+            serializer = QuestionGetSerializer(question)
             return Response(serializer.data, status=HTTP_200_OK)
         else:
             return Response({'error': 'No exam or question id provided'}, status=HTTP_400_BAD_REQUEST)
@@ -127,14 +134,14 @@ class QuestionAPIView(APIView):
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, is_active=True, is_deleted=False)
             if exam:
-                question_serializer = QuestionSerializer(data={
+                question_serializer = QuestionPostSerializer(data={
                     'exam': exam_id,
                     'question': request.data.get('question'),
                     'type': request.data.get('type'),
                     'marks': request.data.get('marks'),
                 })
                 if question_serializer.is_valid():
-                    question_serializer.save()
+                    question_serializer.create(question_serializer.validated_data)
                     return Response(question_serializer.data, status=HTTP_201_CREATED)
                 else:
                     return Response(question_serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -148,14 +155,14 @@ class QuestionAPIView(APIView):
         if request.user.is_organization:
             question = QuestionModel.objects.get(uuid=question_id)
             if question:
-                question_serializer = QuestionSerializer(question, data={
+                question_serializer = QuestionPostSerializer(question, data={
                     'exam': question.exam.uuid,
                     'question': request.data.get('question'),
                     'type': request.data.get('type'),
                     'marks': request.data.get('marks'),
                 })
                 if question_serializer.is_valid():
-                    question_serializer.save()
+                    question_serializer.update(question, question_serializer.validated_data)
                     return Response(question_serializer.data, status=HTTP_201_CREATED)
                 else:
                     return Response(question_serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -164,6 +171,18 @@ class QuestionAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
+    def delete(self, request):
+        question_id = request.GET.get('question_id')
+        if request.user.is_organization:
+            question = QuestionModel.objects.get(uuid=question_id)
+            if question:
+                question.delete()
+                return Response({'success': 'Question deleted successfully'}, status=HTTP_200_OK)
+            else:
+                return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
+        
 
 class OptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
