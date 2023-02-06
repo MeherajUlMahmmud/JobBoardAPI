@@ -104,12 +104,14 @@ class JobAPIView(APIView):
 class JobApplicationAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request, pk=None):
         page = request.GET.get('page')
         job = request.GET.get('job')
         applicant = request.GET.get('applicant')
 
-        if job:
+        if job and applicant:
+            job_applications = JobApplicationModel.objects.filter(job=job, applicant=applicant)
+        elif job:
             job_applications = JobApplicationModel.objects.filter(job=job)
         elif applicant:
             job_applications = JobApplicationModel.objects.filter(applicant=applicant)
@@ -126,6 +128,9 @@ class JobApplicationAPIView(APIView):
         job = request.data.get('job')
         applicant = request.data.get('applicant')
         cover_letter = request.data.get('cover_letter')
+
+        if JobApplicationModel.objects.filter(job=job, applicant=applicant).exists():
+            return Response({'error': 'Job application already exists'}, status=HTTP_400_BAD_REQUEST)
 
         job_application_serializer = JobApplicationCreateSerializer(data={
             'job': job,
