@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'user_control.apps.UserControlConfig',
     'job_control.apps.JobControlConfig',
     'exam_control.apps.ExamControlConfig',
+    'resume_control.apps.ResumeControlConfig',
 
     'rest_framework',
     'rest_framework.authtoken',

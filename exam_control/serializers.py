@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from exam_control.models import ExamModel, QuestionModel, OptionModel, ApplicantResponseModel
-from user_control.serializers import OrganizationModelSerializer, ApplicantModelSerializer
+from user_control.serializers import ApplicantModelSerializer
 
 
 class ExamModelGetSerializer(serializers.ModelSerializer):
