@@ -13,19 +13,20 @@ from job_control.models import JobModel, JobApplicationModel
 class ExamAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         job_id = request.GET.get('job_id')
         exam_id = request.GET.get('exam_id')
         if request.user.is_organization:
             if job_id and exam_id:
-                exam = ExamModel.objects.get(uuid=exam_id, job__uuid=job_id, organization=request.user.organization)
+                exam = ExamModel.objects.get(uuid=exam_id, job__uuid=job_id)
                 if exam:
                     exam_serializer = ExamModelGetSerializer(exam)
                     return Response(exam_serializer.data, status=HTTP_200_OK)
                 else:
                     return Response({'error': 'Exam does not exist'}, status=HTTP_400_BAD_REQUEST)
             elif job_id:
-                job = JobModel.objects.get(uuid=job_id, organization=request.user.organization)
+                job = JobModel.objects.get(uuid=job_id)
                 if job:
                     exams = ExamModel.objects.filter(job=job)
                     exam_serializer = ExamModelGetSerializer(exams, many=True)
@@ -33,7 +34,7 @@ class ExamAPIView(APIView):
                 else:
                     return Response({'error': 'Job does not exist'}, status=HTTP_400_BAD_REQUEST)
             elif exam_id:
-                exam = ExamModel.objects.get(uuid=exam_id, organization=request.user.organization)
+                exam = ExamModel.objects.get(uuid=exam_id)
                 if exam:
                     exam_serializer = ExamModelGetSerializer(exam)
                     return Response(exam_serializer.data, status=HTTP_200_OK)
@@ -44,7 +45,8 @@ class ExamAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         job_id = request.data.get('job_id')
         if request.user.is_organization:
             organization = request.user.organization
@@ -69,7 +71,8 @@ class ExamAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
         exam_id = request.GET.get('exam_id')
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, organization=request.user.organization)
@@ -92,7 +95,8 @@ class ExamAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         exam_id = request.GET.get('exam_id')
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, organization=request.user.organization)
@@ -108,7 +112,8 @@ class ExamAPIView(APIView):
 class QuestionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         exam_id = request.GET.get('exam_id')
         question_id = request.GET.get('question_id')
         if exam_id and question_id:
@@ -136,7 +141,8 @@ class QuestionAPIView(APIView):
         else:
             return Response({'error': 'No exam or question id provided'}, status=HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         exam_id = request.data.get('exam_id')
         if request.user.is_organization:
             exam = ExamModel.objects.get(uuid=exam_id, is_active=True, is_deleted=False)
@@ -157,7 +163,8 @@ class QuestionAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
         question_id = request.GET.get('question_id')
         if request.user.is_organization:
             question = QuestionModel.objects.get(uuid=question_id)
@@ -178,7 +185,8 @@ class QuestionAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         question_id = request.GET.get('question_id')
         if request.user.is_organization:
             question = QuestionModel.objects.get(uuid=question_id)
@@ -194,7 +202,8 @@ class QuestionAPIView(APIView):
 class OptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         question_id = request.GET.get('question_id')
         question = QuestionModel.objects.get(uuid=question_id)
         if question:
@@ -204,10 +213,11 @@ class OptionAPIView(APIView):
         else:
             return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         question_id = request.data.get('question_id')
         if request.user.is_organization:
-            question = QuestionModel.objects.get(uuid=question_id, is_active=True, is_deleted=False)
+            question = QuestionModel.objects.get(uuid=question_id)
             if question:
                 option_serializer = OptionModelPostSerializer(data={
                     'question': question_id,
@@ -224,7 +234,8 @@ class OptionAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
         option_id = request.GET.get('option_id')
         if request.user.is_organization:
             option = OptionModel.objects.get(uuid=option_id)
@@ -244,7 +255,8 @@ class OptionAPIView(APIView):
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         option_id = request.GET.get('option_id')
         if request.user.is_organization:
             option = OptionModel.objects.get(uuid=option_id)
@@ -260,7 +272,8 @@ class OptionAPIView(APIView):
 class ApplicantResponseAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         exam_id = request.GET.get('exam_id')
         exam = ExamModel.objects.get(uuid=exam_id, is_active=True, is_deleted=False)
         applicant = request.user.applicant
@@ -268,5 +281,6 @@ class ApplicantResponseAPIView(APIView):
         serializer = ApplicantResponseDetailSerializer(responses, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         pass
