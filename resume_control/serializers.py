@@ -5,13 +5,13 @@ from resume_control.models import *
 
 class ExperienceModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'company_name', 'position', 'type', 'start_date', 'end_date', 'description')
+        fields = ('uuid', 'user', 'company_name', 'position', 'type', 'start_date', 'end_date', 'description', 'is_active')
         depth = 1
 
 
 class ExperienceModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'company_name', 'position', 'start_date', 'end_date', 'description')
+        fields = ('uuid', 'user', 'company_name', 'position', 'start_date', 'end_date', 'description', 'is_active')
 
     def create(self, validated_data):
         experience = ExperienceModel.objects.create(
@@ -36,13 +36,13 @@ class ExperienceModelPostSerializer(serializers.Serializer):
 
 class EducationModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'school_name', 'degree', 'department', 'grade', 'start_date', 'end_date', 'description')
+        fields = ('uuid', 'user', 'school_name', 'degree', 'department', 'grade', 'start_date', 'end_date', 'description', 'is_active')
         depth = 1
 
 
 class EducationModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'school_name', 'degree', 'department', 'grade', 'start_date', 'end_date', 'description')
+        fields = ('uuid', 'user', 'school_name', 'degree', 'department', 'grade', 'start_date', 'end_date', 'description', 'is_active')
 
     def create(self, validated_data):
         education = EducationModel.objects.create(
@@ -71,13 +71,13 @@ class EducationModelPostSerializer(serializers.Serializer):
 
 class SkillModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'skill', 'proficiency', 'description')
+        fields = ('uuid', 'user', 'skill', 'proficiency', 'description', 'is_active')
         depth = 1
 
 
 class SkillModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'skill', 'proficiency', 'description')
+        fields = ('uuid', 'user', 'skill', 'proficiency', 'description', 'is_active')
 
     def create(self, validated_data):
         skill = SkillModel.objects.create(
@@ -98,13 +98,13 @@ class SkillModelPostSerializer(serializers.Serializer):
 
 class LanguageModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'language', 'proficiency', 'description')
+        fields = ('uuid', 'user', 'language', 'proficiency', 'description', 'is_active')
         depth = 1
 
 
 class LanguageModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'language', 'proficiency', 'description')
+        fields = ('uuid', 'user', 'language', 'proficiency', 'description', 'is_active')
 
     def create(self, validated_data):
         language = LanguageModel.objects.create(
@@ -125,13 +125,13 @@ class LanguageModelPostSerializer(serializers.Serializer):
 
 class InterestModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'interest', 'description')
+        fields = ('uuid', 'user', 'interest', 'description', 'is_active')
         depth = 1
 
 
 class InterestModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'interest', 'description')
+        fields = ('uuid', 'user', 'interest', 'description', 'is_active')
 
     def create(self, validated_data):
         interest = InterestModel.objects.create(
@@ -185,13 +185,13 @@ class ReferenceModelPostSerializer(serializers.Serializer):
 
 class AwardModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'title', 'description', 'link')
+        fields = ('uuid', 'user', 'title', 'description', 'link', 'is_active')
         depth = 1
 
 
 class AwardModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'title', 'description', 'link')
+        fields = ('uuid', 'user', 'title', 'description', 'link', 'is_active')
 
     def create(self, validated_data):
         award = AwardModel.objects.create(
@@ -212,13 +212,13 @@ class AwardModelPostSerializer(serializers.Serializer):
 
 class CertificationModelGetSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'title', 'description', 'link', 'start_date', 'end_date')
+        fields = ('uuid', 'user', 'title', 'description', 'link', 'start_date', 'end_date', 'is_active')
         depth = 1
 
 
 class CertificationModelPostSerializer(serializers.Serializer):
     class Meta:
-        fields = ('uuid', 'user', 'title', 'description', 'link', 'start_date', 'end_date')
+        fields = ('uuid', 'user', 'title', 'description', 'link', 'start_date', 'end_date', 'is_active')
 
     def create(self, validated_data):
         certification = CertificationModel.objects.create(
