@@ -10,8 +10,22 @@ class ExamAdmin(admin.ModelAdmin):
     ordering = ('name', 'organization', 'job', 'created_at', 'updated_at')
 
 
-admin.site.register(ExamModel)
-admin.site.register(QuestionModel)
-admin.site.register(OptionModel)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('question', 'exam', 'created_at', 'updated_at')
+    list_filter = ('exam',)
+    search_fields = ('question',)
+    ordering = ('exam', 'created_at', 'updated_at')
+
+
+class OptionAdmin(admin.ModelAdmin):
+    list_display = ('option', 'question', 'is_correct', 'created_at', 'updated_at')
+    list_filter = ('question',)
+    search_fields = ('option',)
+    ordering = ('question', 'created_at', 'updated_at')
+
+
+admin.site.register(ExamModel, ExamAdmin)
+admin.site.register(QuestionModel, QuestionAdmin)
+admin.site.register(OptionModel, OptionAdmin)
 admin.site.register(ApplicantResponseModel)
 admin.site.register(QuestionResponseModel)
