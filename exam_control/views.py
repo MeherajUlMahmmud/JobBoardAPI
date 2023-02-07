@@ -62,8 +62,9 @@ class ExamAPIView(APIView):
                     'pass_marks': request.data.get('pass_marks'),
                 })
                 if exam_serializer.is_valid():
-                    exam_serializer.create(exam_serializer.validated_data)
-                    return Response(exam_serializer.data, status=HTTP_201_CREATED)
+                    exam = exam_serializer.create(exam_serializer.validated_data)
+                    exam_serializer_data = ExamModelGetSerializer(exam).data
+                    return Response(exam_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(exam_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -86,8 +87,9 @@ class ExamAPIView(APIView):
                     'pass_marks': request.data.get('pass_marks'),
                 })
                 if exam_serializer.is_valid():
-                    exam_serializer.update(exam, exam_serializer.validated_data)
-                    return Response(exam_serializer.data, status=HTTP_201_CREATED)
+                    exam = exam_serializer.update(exam, exam_serializer.validated_data)
+                    exam_serializer_data = ExamModelGetSerializer(exam).data
+                    return Response(exam_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(exam_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -119,23 +121,23 @@ class QuestionAPIView(APIView):
         if exam_id and question_id:
             question = QuestionModel.objects.get(uuid=question_id, exam__uuid=exam_id)
             if question:
-                question_serializer = QuestionModelGetSerializer(question)
-                return Response(question_serializer.data, status=HTTP_200_OK)
+                question_serializer_data = QuestionModelGetSerializer(question).data
+                return Response(question_serializer_data, status=HTTP_200_OK)
             else:
                 return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
         elif exam_id:
             exam = ExamModel.objects.get(uuid=exam_id)
             if exam:
                 questions = QuestionModel.objects.filter(exam=exam)
-                question_serializer = QuestionModelGetSerializer(questions, many=True)
-                return Response(question_serializer.data, status=HTTP_200_OK)
+                question_serializer_data = QuestionModelGetSerializer(questions, many=True).data
+                return Response(question_serializer_data, status=HTTP_200_OK)
             else:
                 return Response({'error': 'Exam does not exist'}, status=HTTP_400_BAD_REQUEST)
         elif question_id:
             question = QuestionModel.objects.get(uuid=question_id)
             if question:
-                question_serializer = QuestionModelGetSerializer(question)
-                return Response(question_serializer.data, status=HTTP_200_OK)
+                question_serializer_data = QuestionModelGetSerializer(question).data
+                return Response(question_serializer_data, status=HTTP_200_OK)
             else:
                 return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
         else:
@@ -154,8 +156,9 @@ class QuestionAPIView(APIView):
                     'marks': request.data.get('marks'),
                 })
                 if question_serializer.is_valid():
-                    question_serializer.create(question_serializer.validated_data)
-                    return Response(question_serializer.data, status=HTTP_201_CREATED)
+                    question = question_serializer.create(question_serializer.validated_data)
+                    question_serializer_data = QuestionModelGetSerializer(question).data
+                    return Response(question_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(question_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -176,8 +179,9 @@ class QuestionAPIView(APIView):
                     'marks': request.data.get('marks'),
                 })
                 if question_serializer.is_valid():
-                    question_serializer.update(question, question_serializer.validated_data)
-                    return Response(question_serializer.data, status=HTTP_201_CREATED)
+                    question = question_serializer.update(question, question_serializer.validated_data)
+                    question_serializer_data = QuestionModelGetSerializer(question).data
+                    return Response(question_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(question_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -208,8 +212,8 @@ class OptionAPIView(APIView):
         question = QuestionModel.objects.get(uuid=question_id)
         if question:
             options = OptionModel.objects.filter(question=question)
-            serializer = OptionModelGetSerializer(options, many=True)
-            return Response(serializer.data, status=HTTP_200_OK)
+            option_serializer_data = OptionModelGetSerializer(options, many=True).data
+            return Response(option_serializer_data, status=HTTP_200_OK)
         else:
             return Response({'error': 'Question does not exist'}, status=HTTP_400_BAD_REQUEST)
 
@@ -225,8 +229,9 @@ class OptionAPIView(APIView):
                     'is_correct': request.data.get('is_correct'),
                 })
                 if option_serializer.is_valid():
-                    option_serializer.create(option_serializer.validated_data)
-                    return Response(option_serializer.data, status=HTTP_201_CREATED)
+                    option = option_serializer.create(option_serializer.validated_data)
+                    option_serializer_data = OptionModelGetSerializer(option).data
+                    return Response(option_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(option_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -246,8 +251,9 @@ class OptionAPIView(APIView):
                     'is_correct': request.data.get('is_correct'),
                 })
                 if option_serializer.is_valid():
-                    option_serializer.update(option, option_serializer.validated_data)
-                    return Response(option_serializer.data, status=HTTP_201_CREATED)
+                    option = option_serializer.update(option, option_serializer.validated_data)
+                    option_serializer_data = OptionModelGetSerializer(option).data
+                    return Response(option_serializer_data, status=HTTP_201_CREATED)
                 else:
                     return Response(option_serializer.errors, status=HTTP_400_BAD_REQUEST)
             else:
@@ -275,7 +281,7 @@ class ApplicantResponseAPIView(APIView):
     @staticmethod
     def get(request):
         exam_id = request.GET.get('exam_id')
-        exam = ExamModel.objects.get(uuid=exam_id, is_active=True, is_deleted=False)
+        exam = ExamModel.objects.get(uuid=exam_id)
         applicant = request.user.applicant
         responses = ApplicantResponseModel.objects.filter(exam=exam, applicant=applicant)
         serializer = ApplicantResponseDetailSerializer(responses, many=True)
