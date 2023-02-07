@@ -53,35 +53,28 @@ class JobModelPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class JobApplicationCreateSerializer(serializers.ModelSerializer):
+class JobApplicationGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplicationModel
-        fields = ('uuid', 'job', 'applicant', 'cover_letter')
-
-    def save(self, **kwargs):
-        job = self.validated_data['job']
-        applicant = self.validated_data['applicant']
-        cover_letter = self.validated_data['cover_letter']
-
-        job_application = JobApplicationModel.objects.create(
-            job=job,
-            applicant=applicant,
-            cover_letter=cover_letter,
-        )
-
-        return job_application
+        fields = ('uuid', 'job', 'applicant', 'cover_letter', 'status')
+        depth = 2
 
 
-class JobApplicationDetailSerializer(serializers.ModelSerializer):
-    job = serializers.SerializerMethodField()
-    applicant = serializers.SerializerMethodField()
-
+class JobApplicationPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplicationModel
         fields = ('uuid', 'job', 'applicant', 'cover_letter', 'status')
 
-    def get_job(self, obj):
-        return JobModelGetSerializer(obj.job).data
+    def create(self, validated_data):
+        application = JobApplicationModel.objects.create(
+            job=validated_data['job'],
+            applicant=validated_data['applicant'],
+            cover_letter=validated_data['cover_letter'],
+            status=validated_data['status'],
+        )
+        return application
 
-    def get_applicant(self, obj):
-        return ApplicantModelSerializer(obj.applicant).data
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
