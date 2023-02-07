@@ -1,49 +1,61 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
-from job_control.models import JobTypeJobModel, JobTypeModel, JobModel, JobApplicationModel
-from job_control.serializer import JobModelGetSerializer, JobModelPostSerializer,JobTypeSerializer, JobTypeJobSerializer, \
+from job_control.models import JobTypeModel, JobModel, JobApplicationModel
+from job_control.serializer import JobModelGetSerializer, JobModelPostSerializer, JobTypeSerializer, \
     JobApplicationCreateSerializer, JobApplicationDetailSerializer
-from user_control.models import UserModel, ApplicantModel
 
 
 class JobTypeAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        job_types = JobTypeModel.objects.all()
-        serializer = JobTypeSerializer(job_types, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+    @staticmethod
+    def get(request):
+        type_id = request.GET.get('type_id')
+        if type_id:
+            job_type = JobTypeModel.objects.get(uuid=type_id)
+            serializer = JobTypeSerializer(job_type)
+            return Response(serializer.data, status=HTTP_200_OK)
+        else:
+            job_types = JobTypeModel.objects.all()
+            serializer = JobTypeSerializer(job_types, many=True)
+            return Response(serializer.data, status=HTTP_200_OK)
 
 
 class JobAPIView(APIView):
     permission_classes = [IsAuthenticated]
     paginate_by = 10
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         page = request.GET.get('page')
         job_id = request.GET.get('job_id')
         organization = request.GET.get('organization')
         # job_type = request.GET.get('job_type')
 
         if job_id and organization:
-            jobs = JobModel.objects.filter(uuid=job_id, organization=organization)
+            job = JobModel.objects.get(uuid=job_id, organization=organization)
+            serializer = JobModelGetSerializer(job)
+            return Response(serializer.data, status=HTTP_200_OK)
+        elif job_id:
+            job = JobModel.objects.get(uuid=job_id)
+            serializer = JobModelGetSerializer(job)
+            return Response(serializer.data, status=HTTP_200_OK)
         elif organization:
             jobs = JobModel.objects.filter(organization=organization)
-        elif job_id:
-            jobs = JobModel.objects.filter(uuid=job_id)
         else:
             jobs = JobModel.objects.all()
 
         job_serializer = JobModelGetSerializer(jobs, many=True)
-        for job in job_serializer.data:
-            job_type_jobs = JobTypeJobModel.objects.filter(job=job['uuid'])
-            job['job_types'] = JobTypeJobSerializer(job_type_jobs, many=True).data
+        # for job in job_serializer.data:
+        #     job_type_jobs = JobTypeJobModel.objects.filter(job=job['uuid'])
+        #     job['job_types'] = JobTypeJobSerializer(job_type_jobs, many=True).data
         return Response(job_serializer.data, status=HTTP_200_OK)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         if request.user.is_organization:
             organization = request.user.organization
             types = request.data.get('types')
@@ -60,18 +72,15 @@ class JobAPIView(APIView):
                 'location': request.data.get('location'),
             })
             if job_serializer.is_valid():
-                job = job_serializer.create(job_serializer.validated_data)
-
-                for type in types_list:
-                    JobTypeJobModel.objects.create(job=job, job_type=type)
-
+                job = job_serializer.create(job_serializer.validated_data, types_list)
                 job_serializer = JobModelPostSerializer(job).data
                 return Response(job_serializer, status=HTTP_201_CREATED)
             return Response(job_serializer.errors, status=HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'User is not organization'}, status=HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
         job_id = request.GET.get('job_id')
         if request.user.is_organization:
             organization = request.user.organization
@@ -91,14 +100,7 @@ class JobAPIView(APIView):
                     'location': request.data.get('location'),
                 })
                 if job_serializer.is_valid():
-                    job = job_serializer.update(job, job_serializer.validated_data)
-
-                    job_type_jobs = JobTypeJobModel.objects.filter(job=job)
-                    job_type_jobs.delete()
-
-                    for type in types_list:
-                        JobTypeJobModel.objects.create(job=job, job_type=type)
-
+                    job = job_serializer.update(job, job_serializer.validated_data, types_list)
                     job_serializer = JobModelPostSerializer(job).data
                     return Response(job_serializer, status=HTTP_201_CREATED)
                 return Response(job_serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -111,8 +113,9 @@ class JobAPIView(APIView):
 class JobApplicationAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk=None):
-        page = request.GET.get('page')
+    @staticmethod
+    def get(request):
+        # page = request.GET.get('page')
         job = request.GET.get('job')
         applicant = request.GET.get('applicant')
 
@@ -125,13 +128,14 @@ class JobApplicationAPIView(APIView):
         else:
             job_applications = JobApplicationModel.objects.all()
         job_application_serializer = JobApplicationDetailSerializer(job_applications, many=True)
-        for job_application in job_application_serializer.data:
-            job_application['job']['job_types'] = JobTypeJobSerializer(
-                JobTypeJobModel.objects.filter(job=job_application['job']['uuid']), many=True).data
+        # for job_application in job_application_serializer.data:
+            # job_application['job']['job_types'] = JobTypeJobSerializer(
+            #     JobTypeJobModel.objects.filter(job=job_application['job']['uuid']), many=True).data
 
         return Response(job_application_serializer.data, status=HTTP_200_OK)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         job = request.data.get('job')
         applicant = request.data.get('applicant')
         cover_letter = request.data.get('cover_letter')

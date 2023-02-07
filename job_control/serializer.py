@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from job_control.models import JobModel, JobTypeModel, JobApplicationModel, JobTypeJobModel
+from job_control.models import JobModel, JobTypeModel, JobApplicationModel
 from user_control.models import OrganizationModel
 from user_control.serializers import OrganizationModelSerializer, ApplicantModelSerializer
 
@@ -12,28 +12,15 @@ class JobTypeSerializer(serializers.ModelSerializer):
 
 
 class JobModelGetSerializer(serializers.ModelSerializer):
+    job_types = JobTypeSerializer(many=True, read_only=True)
+
     class Meta:
         model = JobModel
-        fields = ('uuid', 'organization', 'title', 'description', 'department', 'location')
+        fields = ('uuid', 'organization', 'title', 'description', 'department', 'location', 'job_types')
         depth = 1
 
-    def create(self, validated_data):
-        job = JobModel.objects.create(
-            organization=validated_data['organization'],
-            title=validated_data['title'],
-            description=validated_data['description'],
-            department=validated_data['department'],
-            location=validated_data['location'],
-        )
-        return job
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.department = validated_data.get('department', instance.department)
-        instance.location = validated_data.get('location', instance.location)
-        instance.save()
-        return instance
+    def get_job_types(self, obj):
+        return obj.job_types.all().values_list('name', flat=True)
 
 
 class JobModelPostSerializer(serializers.ModelSerializer):
@@ -41,7 +28,7 @@ class JobModelPostSerializer(serializers.ModelSerializer):
         model = JobModel
         fields = ('uuid', 'organization', 'title', 'description', 'department', 'location')
 
-    def create(self, validated_data):
+    def create(self, validated_data, job_types):
         job = JobModel.objects.create(
             organization=validated_data['organization'],
             title=validated_data['title'],
@@ -49,26 +36,21 @@ class JobModelPostSerializer(serializers.ModelSerializer):
             department=validated_data['department'],
             location=validated_data['location'],
         )
+        for job_type in job_types:
+            job.job_types.add(job_type)
+
         return job
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data, job_types):
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
         instance.department = validated_data.get('department', instance.department)
         instance.location = validated_data.get('location', instance.location)
+        instance.job_types.clear()
+        for job_type in job_types:
+            instance.job_types.add(job_type)
         instance.save()
         return instance
-
-
-class JobTypeJobSerializer(serializers.ModelSerializer):
-    job_type = serializers.SerializerMethodField()
-
-    class Meta:
-        model = JobTypeJobModel
-        fields = ('uuid', 'job_type',)
-
-    def get_job_type(self, obj):
-        return JobTypeSerializer(obj.job_type).data
 
 
 class JobApplicationCreateSerializer(serializers.ModelSerializer):
@@ -99,7 +81,7 @@ class JobApplicationDetailSerializer(serializers.ModelSerializer):
         fields = ('uuid', 'job', 'applicant', 'cover_letter', 'status')
 
     def get_job(self, obj):
-        return JobDetailSerializer(obj.job).data
+        return JobModelGetSerializer(obj.job).data
 
     def get_applicant(self, obj):
         return ApplicantModelSerializer(obj.applicant).data

@@ -19,24 +19,13 @@ class JobModel(BaseModel):
     description = models.TextField()
     department = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    # job_types = models.ManyToManyField(JobTypeModel, related_name='job_types')
+    job_types = models.ManyToManyField(JobTypeModel, related_name='job_types')
 
     class Meta:
         verbose_name_plural = 'Jobs'
 
     def __str__(self):
         return self.title
-
-
-class JobTypeJobModel(BaseModel):
-    job_type = models.ForeignKey('JobTypeModel', on_delete=models.CASCADE, related_name='job_type')
-    job = models.ForeignKey('JobModel', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = 'Job Type Jobs'
-
-    def __str__(self):
-        return self.job_type.name
 
 
 class JobApplicationModel(BaseModel):
