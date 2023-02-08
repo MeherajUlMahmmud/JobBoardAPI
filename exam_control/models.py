@@ -25,12 +25,16 @@ class QuestionModel(BaseModel):
     QUESTION_TYPE_CHOICES = (
         ('MCQ', 'Multiple Choice Question (MCQ)'),  # Multiple Choice Question (One Answer)
         ('MCQ-M', 'Multiple Choice Question (MCQ-M)'),  # Multiple Choice Question (Multiple Answers)
+        # ('FIB', 'Fill in the Blanks (FIB)'),  # Fill in the Blanks
+        # ('TF', 'True or False (TF)'),  # True or False
+        ('WA', 'Write Answer (WA)'),  # Write Answer
     )
     exam = models.ForeignKey('ExamModel', on_delete=models.CASCADE)
     question = models.TextField()
     type = models.CharField(max_length=255, choices=QUESTION_TYPE_CHOICES, default='MCQ')
     marks = models.IntegerField(default=0)
     options = models.ManyToManyField('OptionModel', related_name='question_options')
+    text_answer = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = 'question'
@@ -77,14 +81,13 @@ class ApplicantResponseModel(BaseModel):
 class QuestionResponseModel(BaseModel):
     applicant_response = models.ForeignKey('ApplicantResponseModel', on_delete=models.CASCADE)
     question = models.ForeignKey('QuestionModel', on_delete=models.CASCADE, related_name='response_question')
-    option = models.ForeignKey('OptionModel', on_delete=models.CASCADE, related_name='response_option')
-    answer = models.ForeignKey('OptionModel', on_delete=models.CASCADE, related_name='response_answer', null=True, blank=True)
+    options = models.ManyToManyField('OptionModel', related_name='response_options')
+    text_answer = models.TextField(null=True, blank=True)
     is_correct = models.BooleanField(default=False)
     obtained_marks = models.IntegerField()
 
     class Meta:
         verbose_name_plural = 'Question Responses'
-        unique_together = ('applicant_response', 'answer')  # This is a composite key
 
     def __str__(self):
         return self.question.question + ' - ' + self.option.option

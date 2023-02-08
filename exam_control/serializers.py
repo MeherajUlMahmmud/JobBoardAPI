@@ -94,16 +94,67 @@ class OptionModelPostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ApplicantResponseDetailSerializer(serializers.ModelSerializer):
-    exam = serializers.SerializerMethodField()
-    applicant = serializers.SerializerMethodField()
+class ApplicantResponseModelGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ApplicantResponseModel
         fields = ['uuid', 'exam', 'applicant', 'total_marks', 'start_time', 'submission_time', 'is_submitted', 'is_passed', 'is_late']
+        depth = 1
 
-    # def get_exam(self, obj):
-    #     return ExamDetailSerializer(obj.exam).data
 
-    def get_applicant(self, obj):
-        return ApplicantModelSerializer(obj.applicant).data
+class ApplicantResponseModelPostSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = ApplicantResponseModel
+            fields = ['uuid', 'exam', 'applicant', 'total_marks', 'start_time', 'submission_time', 'is_submitted', 'is_passed', 'is_late']
+
+        def create(self, validated_data):
+            applicant_response = ApplicantResponseModel.objects.create(
+                exam=self.validated_data['exam'],
+                applicant=self.validated_data['applicant'],
+                start_time=self.validated_data['start_time'] if self.validated_data['start_time'] else None,
+            )
+            return applicant_response
+
+        def update(self, instance, validated_data, is_applicant):
+            if is_applicant:
+                instance.submission_time = validated_data.get('submission_time', instance.submission_time)
+                instance.is_submitted = validated_data.get('is_submitted', instance.is_submitted)
+                instance.is_late = validated_data.get('is_late', instance.is_late)
+            else:
+                instance.total_marks = validated_data.get('total_marks', instance.total_marks)
+                instance.is_passed = validated_data.get('is_passed', instance.is_passed)
+
+            instance.save()
+            return instance
+
+
+class QuestionResponseModelGetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionModel
+        fields = ['uuid', 'question', 'marks', 'type', 'options', 'applicant_response']
+        depth = 1
+
+
+class QuestionResponseModelPostSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = QuestionModel
+            fields = ['uuid', 'question', 'marks', 'type', 'options', 'applicant_response']
+
+        def create(self, validated_data, is_correct):
+            question_response = QuestionModel.objects.create(
+                applicant_response=self.validated_data['applicant_response'],
+                question=self.validated_data['question'],
+                option=self.validated_data['option'] if self.validated_data['option'] else None,
+                text_answer=self.validated_data['text_answer'] if self.validated_data['text_answer'] else None,
+                obtained_marks=self.validated_data['obtained_marks'] if self.validated_data['obtained_marks'] else None,
+                is_correct=is_correct,
+            )
+            return question_response
+
+        def update(self, instance, validated_data):
+            instance.marks = validated_data.get('marks', instance.marks)
+            instance.save()
+            return instance
