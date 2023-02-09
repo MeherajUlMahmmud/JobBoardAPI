@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from base.g_models import BaseModel
 
 
 class MyUserManager(BaseUserManager):
-    def create_applicant(self, email, first_name, last_name, password=None):
+    def create_applicant(self, email, password=None):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -18,12 +19,9 @@ class MyUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
-        # applicant = ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
-        # applicant.save(using=self._db)
-
         return user
 
-    def create_organization(self, email, name, password=None):
+    def create_organization(self, email, password=None):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -35,12 +33,9 @@ class MyUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
-        # organization = OrganizationModel.objects.create(user=user, name=name)
-        # organization.save(using=self._db)
-
         return user
 
-    def create_user(self, email, password=None, is_active=True, is_staff=False, is_admin=False):
+    def create_user(self, email, password=None):
         """
         Creates and saves a User with the given email and password.
         """
@@ -55,21 +50,21 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_staffuser(self, email, password):
+    def create_staffuser(self, email, password=None):
         """
         Creates and saves a staff user with the given email and password.
         """
         user = self.create_user(
-            email,
+            email=self.normalize_email(email),
             password=password,
         )
         user.is_staff = True
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password=None):
         user = self.create_user(
-            email,
+            email=self.normalize_email(email),
             password=password,
         )
         user.is_staff = True
@@ -105,6 +100,13 @@ class UserModel(AbstractBaseUser, BaseModel, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    def tokens(self):
+        tokens = RefreshToken.for_user(self)
+        return {
+            'refresh': str(tokens),
+            'access': str(tokens.access_token),
+        }
+
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
@@ -130,7 +132,7 @@ class ApplicantModel(BaseModel):
         verbose_name_plural = 'Applicants'
 
     def __str__(self):
-        return self.user.email
+        return self.first_name + ' ' + self.last_name
 
 
 class OrganizationModel(BaseModel):
