@@ -4,8 +4,73 @@ from base.g_models import BaseModel
 from user_control.models import UserModel
 
 
+class ResumeModel(BaseModel):
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='resume')
+    name = models.CharField(max_length=255, null=False, blank=False)
+    is_education_visible = models.BooleanField(default=True)
+    is_experience_visible = models.BooleanField(default=True)
+    is_skill_visible = models.BooleanField(default=True)
+    is_language_visible = models.BooleanField(default=True)
+    is_interest_visible = models.BooleanField(default=True)
+    is_reference_visible = models.BooleanField(default=True)
+    is_award_visible = models.BooleanField(default=True)
+    is_certification_visible = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'resume'
+
+        verbose_name = 'Resume'
+        verbose_name_plural = 'Resumes'
+
+    def __str__(self):
+        return self.name
+
+
+class PersonalModel(BaseModel):
+    resume = models.OneToOneField(ResumeModel, on_delete=models.CASCADE, related_name='personal')
+    first_name = models.CharField(max_length=255, null=False, blank=False)
+    last_name = models.CharField(max_length=255, null=False, blank=False)
+    about_me = models.TextField(null=True, blank=True)
+    resume_picture = models.ImageField(upload_to='resume_picture/', null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    nationality = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=255, null=False, blank=False)
+    state = models.CharField(max_length=255, null=False, blank=False)
+    country = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        db_table = 'personal'
+
+        verbose_name = 'Personal'
+        verbose_name_plural = 'Personals'
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
+
+class ContactModel(BaseModel):
+    resume = models.OneToOneField(ResumeModel, on_delete=models.CASCADE, related_name='contact')
+    phone_number = models.CharField(max_length=255, null=False, blank=False)
+    email = models.EmailField(max_length=255, null=False, blank=False)
+    address = models.CharField(max_length=255, null=False, blank=False)
+    zip_code = models.CharField(max_length=255, null=False, blank=False)
+    facebook = models.CharField(max_length=255, null=True, blank=True)
+    linkedin = models.CharField(max_length=255, null=True, blank=True)
+    github = models.CharField(max_length=255, null=True, blank=True)
+    website = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        db_table = 'contact'
+
+        verbose_name = 'Contact'
+        verbose_name_plural = 'Contacts'
+
+    def __str__(self):
+        return self.name
+
+
 class ExperienceModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='experience')
     company_name = models.CharField(max_length=255, null=False, blank=False)
     position = models.CharField(max_length=255, null=False, blank=False)
     type = models.CharField(max_length=255, null=False, blank=False)
@@ -24,7 +89,7 @@ class ExperienceModel(BaseModel):
 
 
 class EducationModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='education')
     school_name = models.CharField(max_length=255, null=False, blank=False)
     degree = models.CharField(max_length=255, null=False, blank=False)
     department = models.CharField(max_length=255, null=False, blank=False)
@@ -50,7 +115,7 @@ class SkillModel(BaseModel):
         ('Advanced', 'Advanced'),
         ('Professional', 'Professional'),
     ]
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='skill')
     skill = models.CharField(max_length=255, null=False, blank=False)
     proficiency = models.CharField(max_length=255, null=False, blank=False, choices=SKILL_PROFICIENCY)
     description = models.TextField(null=True, blank=True)
@@ -72,8 +137,7 @@ class LanguageModel(BaseModel):
         ('Advanced', 'Advanced'),
         ('Professional', 'Professional'),
     ]
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    language = models.CharField(max_length=255, null=False, blank=False)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='language')
     proficiency = models.CharField(max_length=255, null=False, blank=False, choices=LANGUAGE_PROFICIENCY)
     description = models.TextField(null=True, blank=True)
 
@@ -88,7 +152,7 @@ class LanguageModel(BaseModel):
 
 
 class InterestModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='interest')
     interest = models.CharField(max_length=255, null=False, blank=False)
     description = models.TextField(null=True, blank=True)
 
@@ -103,7 +167,7 @@ class InterestModel(BaseModel):
 
 
 class ReferenceModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='reference')
     name = models.CharField(max_length=255, null=False, blank=False)
     email = models.EmailField(max_length=255, null=False, blank=False)
     phone = models.CharField(max_length=255, null=False, blank=False)
@@ -123,7 +187,7 @@ class ReferenceModel(BaseModel):
 
 
 class AwardModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='award')
     title = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     link = models.URLField(max_length=255, null=True, blank=True)
@@ -139,7 +203,7 @@ class AwardModel(BaseModel):
 
 
 class CertificationModel(BaseModel):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='certification')
     title = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     link = models.URLField(max_length=255, null=True, blank=True)

@@ -8,8 +8,6 @@ urlpatterns = [
     path('verify-email', VerifyEmailAPIView.as_view(), name="verify-email"),
     path('resend-verification-email', ResendVerificationEmailAPIView.as_view()),
     path('login', LoginAPIView.as_view()),
-    # path('refresh-token', ObtainAuthToken.as_view()),
-    # path('logout', LogoutAPIView.as_view()),
     path('logout', LogoutAPIView.as_view(), name="logout"),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     # path('request-reset-email', RequestPasswordResetEmail.as_view(),

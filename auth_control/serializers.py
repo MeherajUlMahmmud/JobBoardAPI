@@ -12,6 +12,9 @@ from user_control.models import UserModel, ApplicantModel, OrganizationModel
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255, min_length=2, allow_null=True)
+    first_name = serializers.CharField(max_length=255, min_length=2, allow_null=True)
+    last_name = serializers.CharField(max_length=255, min_length=2, allow_null=True)
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
     is_applicant = serializers.BooleanField(required=True)
@@ -21,6 +24,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = [
             'uuid',
+            'name',
+            'first_name',
+            'last_name',
             'email',
             'password',
             'password2',

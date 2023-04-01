@@ -58,6 +58,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password,
         )
+        user.is_verified = True
         user.is_staff = True
         user.save(using=self._db)
         return user
@@ -67,6 +68,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password,
         )
+        user.is_verified = True
         user.is_staff = True
         user.is_admin = True
         user.is_superuser = True
@@ -115,10 +117,7 @@ class UserModel(AbstractBaseUser, BaseModel, PermissionsMixin):
 
 
 class ApplicantModel(BaseModel):
-    user = models.OneToOneField(UserModel, on_delete=models.CASCADE,
-                                related_name='applicant')  # OneToOneField is used to create a one-to-one
-    # relationship between the two models and related_name is used to access the related object from the other side
-    # of the relationship.
+    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='applicant')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)

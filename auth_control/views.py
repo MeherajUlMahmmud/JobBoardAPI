@@ -4,6 +4,8 @@ import jwt
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
+from django.db import transaction
 from django.http import HttpResponsePermanentRedirect
 from django.urls import reverse
 from django.utils.encoding import smart_bytes, smart_str, DjangoUnicodeDecodeError
@@ -18,10 +20,10 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user_control.models import ApplicantModel, OrganizationModel, UserModel
-from user_control.serializers import ApplicantModelSerializer, OrganizationModelSerializer, UserModelSerializer
+from user_control.serializers.user import UserModelSerializer
 
-from .serializers import LoginSerializer, RegisterSerializer, EmailVerificationSerializer, \
-    ResendVerificationEmailSerializer, LogoutSerializer
+from .serializers import (LoginSerializer, RegisterSerializer, EmailVerificationSerializer,
+                          ResendVerificationEmailSerializer, LogoutSerializer)
 from .utils import Util
 
 
@@ -33,46 +35,56 @@ class RegisterAPIView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
+    @transaction.atomic
     def post(self, request):
-        data = request.data
-        is_applicant = data.get('is_applicant')
-        is_organization = data.get('is_organization')
-        name = request.data.get('name')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
+        try:
+            data = request.data
+            is_applicant = data.get('is_applicant')
+            is_organization = data.get('is_organization')
+            name = request.data.get('name')
+            first_name = request.data.get('first_name')
+            last_name = request.data.get('last_name')
 
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+            serializer = self.serializer_class(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
-        user_data = serializer.data
-        user = UserModel.objects.get(email=user_data['email'])
-        if is_applicant:
-            applicant = ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
-            applicant.save()
-        elif is_organization:
-            organization = OrganizationModel.objects.create(user=user, name=name)
-            organization.save()
+            user_data = serializer.data
+            user = UserModel.objects.get(email=user_data['email'])
+            if is_applicant:
+                applicant = ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
+                applicant.save()
+            elif is_organization:
+                organization = OrganizationModel.objects.create(user=user, name=name)
+                organization.save()
 
-        name = applicant.first_name + " " + applicant.last_name if is_applicant else organization.name
-        token = RefreshToken.for_user(user).access_token
+            name = applicant.first_name + " " + applicant.last_name if is_applicant else organization.name
+            token = RefreshToken.for_user(user).access_token
 
-        current_site = get_current_site(request).domain
-        relative_link = reverse('verify-email')
-        abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
+            current_site = get_current_site(request).domain
+            relative_link = reverse('verify-email')
+            abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
 
-        email_subject = 'Verify your email'
-        email_body = "Hi " + name + ",\nUse this link to verify your email:\n" + abs_url
-        email_data = {
-            'email_subject': email_subject,
-            'email_body': email_body,
-            'to_email': user.email,
-        }
-        Util.send_email(email_data)
+            email_subject = 'Verify your email'
+            email_body = "Hi " + name + ",\nUse this link to verify your email:\n" + abs_url
+            email_data = {
+                'email_subject': email_subject,
+                'email_body': email_body,
+                'to_email_list': [user.email],
+            }
+            # Util.send_email(email_data)
+            send_mail(
+                email_data['email_subject'],
+                email_data['email_body'],
+                'gktournament64@gmail.com',
+                email_data['to_email_list'],
+                fail_silently=False,
+            )
 
-        return Response({'data': user_data,
-                         'message': 'User created successfully'},
-                        status=HTTP_201_CREATED)
+            return Response({'data': user_data, 'message': 'User created successfully'},
+                            status=HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=HTTP_400_BAD_REQUEST)
 
 
 class VerifyEmailAPIView(APIView):
@@ -94,11 +106,9 @@ class VerifyEmailAPIView(APIView):
             return Response({'message': 'Email successfully verified'},
                             status=HTTP_200_OK)
         except jwt.ExpiredSignatureError as identifier:
-            return Response({'error': 'Activation Expired'},
-                            status=HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Activation Expired'}, status=HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
-            return Response({'error': 'Invalid token'},
-                            status=HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid token'}, status=HTTP_400_BAD_REQUEST)
 
 
 class ResendVerificationEmailAPIView(APIView):
@@ -109,13 +119,11 @@ class ResendVerificationEmailAPIView(APIView):
         data = request.data
         email = data.get('email')
         if email is None:
-            return Response({'error': 'Please provide an email address'},
-                            status=HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Please provide an email address'}, status=HTTP_400_BAD_REQUEST)
         user = UserModel.objects.get(email=email)
         if user:
             if user.is_verified:
-                return Response({'error': 'Email already verified'},
-                                status=HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Email already verified'}, status=HTTP_400_BAD_REQUEST)
 
             if user.is_applicant:
                 applicant = ApplicantModel.objects.get(user=user)
@@ -138,10 +146,8 @@ class ResendVerificationEmailAPIView(APIView):
             }
             Util.send_email(email_data)
 
-            return Response({'message': 'Email sent successfully'},
-                            status=HTTP_200_OK)
-        return Response({'error': 'User does not exist'},
-                        status=HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Email sent successfully'}, status=HTTP_200_OK)
+        return Response({'error': 'User does not exist'}, status=HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(GenericAPIView):
@@ -154,8 +160,8 @@ class LoginAPIView(GenericAPIView):
         user = serializer.validated_data['user']
         tokens = serializer.validated_data['tokens']
         if user:
-            user_data = UserModelSerializer(user).data
-            return Response({'data': user_data, "tokens": tokens, }, status=HTTP_200_OK)
+            user_data = UserModelSerializer.List(user).data
+            return Response({'user': user_data, 'tokens': tokens }, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 

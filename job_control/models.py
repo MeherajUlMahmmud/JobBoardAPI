@@ -1,6 +1,7 @@
 from django.db import models
 
 from base.g_models import BaseModel
+from user_control.models import ApplicantModel
 
 
 class JobTypeModel(BaseModel):
@@ -14,7 +15,8 @@ class JobTypeModel(BaseModel):
 
 
 class JobModel(BaseModel):
-    organization = models.ForeignKey('user_control.OrganizationModel', on_delete=models.CASCADE)
+    organization = models.ForeignKey('user_control.OrganizationModel', on_delete=models.CASCADE,
+                                     related_name='organization')
     title = models.CharField(max_length=100)
     description = models.TextField()
     department = models.CharField(max_length=100)
@@ -29,8 +31,8 @@ class JobModel(BaseModel):
 
 
 class JobApplicationModel(BaseModel):
-    job = models.ForeignKey('JobModel', on_delete=models.CASCADE)
-    applicant = models.ForeignKey('user_control.ApplicantModel', on_delete=models.CASCADE)
+    job = models.ForeignKey(JobModel, on_delete=models.CASCADE, related_name='job')
+    applicant = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE, related_name='applicant')
     cover_letter = models.TextField()
     status = models.CharField(max_length=100, default='pending')
 
