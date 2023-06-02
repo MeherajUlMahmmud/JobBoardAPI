@@ -39,6 +39,7 @@ class RegisterAPIView(GenericAPIView):
     def post(self, request):
         try:
             data = request.data
+            print(data)
             is_applicant = data.get('is_applicant')
             is_organization = data.get('is_organization')
             name = request.data.get('name')
@@ -58,28 +59,28 @@ class RegisterAPIView(GenericAPIView):
                 organization = OrganizationModel.objects.create(user=user, name=name)
                 organization.save()
 
-            name = applicant.first_name + " " + applicant.last_name if is_applicant else organization.name
-            token = RefreshToken.for_user(user).access_token
-
-            current_site = get_current_site(request).domain
-            relative_link = reverse('verify-email')
-            abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
-
-            email_subject = 'Verify your email'
-            email_body = "Hi " + name + ",\nUse this link to verify your email:\n" + abs_url
-            email_data = {
-                'email_subject': email_subject,
-                'email_body': email_body,
-                'to_email_list': [user.email],
-            }
-            # Util.send_email(email_data)
-            send_mail(
-                email_data['email_subject'],
-                email_data['email_body'],
-                'gktournament64@gmail.com',
-                email_data['to_email_list'],
-                fail_silently=False,
-            )
+            # name = applicant.first_name + " " + applicant.last_name if is_applicant else organization.name
+            # token = RefreshToken.for_user(user).access_token
+            #
+            # current_site = get_current_site(request).domain
+            # relative_link = reverse('verify-email')
+            # abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
+            #
+            # email_subject = 'Verify your email'
+            # email_body = "Hi " + name + ",\nUse this link to verify your email:\n" + abs_url
+            # email_data = {
+            #     'email_subject': email_subject,
+            #     'email_body': email_body,
+            #     'to_email_list': [user.email],
+            # }
+            # # Util.send_email(email_data)
+            # send_mail(
+            #     email_data['email_subject'],
+            #     email_data['email_body'],
+            #     'gktournament64@gmail.com',
+            #     email_data['to_email_list'],
+            #     fail_silently=False,
+            # )
 
             return Response({'data': user_data, 'message': 'User created successfully'},
                             status=HTTP_201_CREATED)
