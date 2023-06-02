@@ -1,4 +1,3 @@
-from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
@@ -11,6 +10,7 @@ from resume_control.models import ResumeModel, PersonalModel, ContactModel
 from resume_control.serializers.contact import ContactModelSerializer
 from resume_control.serializers.personal import PersonalModelSerializer
 from resume_control.serializers.resume import ResumeModelSerializer
+from user_control.models import ApplicantModel
 
 
 class ResumeModelViewSet(ModelViewSet):
@@ -27,13 +27,24 @@ class ResumeModelViewSet(ModelViewSet):
             return ResumeModelSerializer.Write
         return ResumeModelSerializer.List
 
+    def create(self, request, *args, **kwargs):
+        serializer = ResumeModelSerializer.Write(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        resume = serializer.save()
+        print(resume)
+        applicant = ApplicantModel.objects.get(user=resume.user)
+        PersonalModel.objects.create(resume=resume, first_name=applicant.first_name,
+                                                last_name=applicant.last_name)
+        ContactModel.objects.create(resume=resume, email=resume.user.email)
+        return Response(serializer.data, status=201)
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         resume = ResumeModel.objects.filter(uuid=instance.uuid).first()
 
         resume_serializer_data = ResumeModelSerializer.List(resume).data
 
-        personal = PersonalModel.objects.filter(resume=resume.uuid).first()
+        personal = PersonalModel.objects.filter(resume=resume).first()
         personal_serializer_data = PersonalModelSerializer(personal).data
         resume_serializer_data['personal'] = personal_serializer_data
 

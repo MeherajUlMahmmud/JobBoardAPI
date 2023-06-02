@@ -7,7 +7,7 @@ from resume_control.serializers.education import EducationModelSerializer
 
 class EducationModelViewSet(ModelViewSet):
     http_method_names = ['get', 'head', 'options', 'post', 'put', 'patch', 'delete']
-    queryset = EducationModel.objects.all()
+    queryset = EducationModel.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):

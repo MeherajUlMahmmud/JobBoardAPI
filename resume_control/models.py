@@ -1,6 +1,7 @@
 from django.db import models
 
 from base.g_models import BaseModel
+from common.choices import WorkExperienceTypeChoices
 from user_control.models import UserModel
 
 
@@ -34,9 +35,9 @@ class PersonalModel(BaseModel):
     resume_picture = models.ImageField(upload_to='resume_picture/', null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=255, null=True, blank=True)
-    city = models.CharField(max_length=255, null=False, blank=False)
-    state = models.CharField(max_length=255, null=False, blank=False)
-    country = models.CharField(max_length=255, null=False, blank=False)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    state = models.CharField(max_length=255, null=True, blank=True)
+    country = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'personal'
@@ -50,10 +51,10 @@ class PersonalModel(BaseModel):
 
 class ContactModel(BaseModel):
     resume = models.OneToOneField(ResumeModel, on_delete=models.CASCADE, related_name='contact')
-    phone_number = models.CharField(max_length=255, null=False, blank=False)
-    email = models.EmailField(max_length=255, null=False, blank=False)
-    address = models.CharField(max_length=255, null=False, blank=False)
-    zip_code = models.CharField(max_length=255, null=False, blank=False)
+    phone_number = models.CharField(max_length=255, null=True, blank=True)
+    email = models.EmailField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    zip_code = models.CharField(max_length=255, null=True, blank=True)
     facebook = models.CharField(max_length=255, null=True, blank=True)
     linkedin = models.CharField(max_length=255, null=True, blank=True)
     github = models.CharField(max_length=255, null=True, blank=True)
@@ -65,18 +66,22 @@ class ContactModel(BaseModel):
         verbose_name = 'Contact'
         verbose_name_plural = 'Contacts'
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.resume
 
 
 class ExperienceModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='experience')
     company_name = models.CharField(max_length=255, null=False, blank=False)
     position = models.CharField(max_length=255, null=False, blank=False)
-    type = models.CharField(max_length=255, null=False, blank=False)
+    type = models.CharField(max_length=255, choices=WorkExperienceTypeChoices.choices,
+                            default=WorkExperienceTypeChoices.FULL_TIME)
     start_date = models.DateField(null=False, blank=False)
-    end_date = models.DateField(null=False, blank=False)
+    is_current = models.BooleanField(default=False)
+    end_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    company_website = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'experience'
@@ -93,9 +98,11 @@ class EducationModel(BaseModel):
     school_name = models.CharField(max_length=255, null=False, blank=False)
     degree = models.CharField(max_length=255, null=False, blank=False)
     department = models.CharField(max_length=255, null=False, blank=False)
+    grade_scale = models.CharField(max_length=255, null=False, blank=False)
     grade = models.CharField(max_length=255, null=False, blank=False)
-    start_date = models.DateField(null=False, blank=False)
-    end_date = models.DateField(null=False, blank=False)
+    start_date = models.DateField(null=True, blank=True)
+    is_current = models.BooleanField(default=False)
+    end_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -138,7 +145,9 @@ class LanguageModel(BaseModel):
         ('Professional', 'Professional'),
     ]
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='language')
-    proficiency = models.CharField(max_length=255, null=False, blank=False, choices=LANGUAGE_PROFICIENCY)
+    language = models.CharField(max_length=255, null=False, blank=False, default='English')
+    proficiency = models.CharField(max_length=255, null=False, blank=False, choices=LANGUAGE_PROFICIENCY,
+                                   default='Professional')
     description = models.TextField(null=True, blank=True)
 
     class Meta:

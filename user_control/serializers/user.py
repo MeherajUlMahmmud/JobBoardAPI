@@ -9,7 +9,6 @@ class UserModelSerializerMeta(ModelSerializer):
     class Meta:
         model = UserModel
         fields = [
-            'uuid',
             'email',
             'is_applicant',
             'is_organization',
@@ -25,11 +24,21 @@ class UserModelSerializer:
         organization = OrganizationModelSerializer.List()
 
         class Meta(UserModelSerializerMeta.Meta):
-            fields = UserModelSerializerMeta.Meta.fields + ['applicant', 'organization']
+            fields = UserModelSerializerMeta.Meta.fields + [
+                'uuid',
+                'applicant',
+                'organization',
+            ]
 
     class Lite(UserModelSerializerMeta):
         class Meta(UserModelSerializerMeta.Meta):
-            fields = ['email', 'is_verified', 'is_staff', 'is_superuser']
+            fields = [
+                'uuid',
+                'email',
+                'is_verified',
+                'is_staff',
+                'is_superuser',
+            ]
 
     class Write(UserModelSerializerMeta):
         class Meta(UserModelSerializerMeta.Meta):

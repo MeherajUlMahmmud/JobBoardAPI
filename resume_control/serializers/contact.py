@@ -7,6 +7,8 @@ class ContactModelSerializer(ModelSerializer):
     class Meta:
         model = ContactModel
         fields = [
+            'uuid',
+            'resume',
             'phone_number',
             'email',
             'address',

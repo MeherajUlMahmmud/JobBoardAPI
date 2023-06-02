@@ -17,17 +17,29 @@ class ResumeModelSerializerMeta(ModelSerializer):
 
 class ResumeModelSerializer(ResumeModelSerializerMeta):
     class List(ResumeModelSerializerMeta):
-        user = UserModelSerializer.List()
+        user = UserModelSerializer.Lite()
 
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
-                'uuid', 'created_at', 'updated_at',
+                'uuid',
+                'is_education_visible',
+                'is_experience_visible',
+                'is_skill_visible',
+                'is_language_visible',
+                'is_interest_visible',
+                'is_reference_visible',
+                'is_award_visible',
+                'is_certification_visible',
+                'created_at',
+                'updated_at',
             ]
 
     class Lite(ResumeModelSerializerMeta):
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
-                'uuid', 'created_at', 'updated_at',
+                'uuid',
+                'created_at',
+                'updated_at',
             ]
 
     class Detail(ResumeModelSerializerMeta):

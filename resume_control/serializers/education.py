@@ -7,8 +7,18 @@ class EducationModelSerializerMeta(serializers.ModelSerializer):
     class Meta:
         model = EducationModel
         fields = (
-        'uuid', 'resume', 'school_name', 'degree', 'department', 'grade', 'start_date', 'end_date',
-        'description')
+            'uuid',
+            'resume',
+            'school_name',
+            'degree',
+            'department',
+            'grade_scale',
+            'grade',
+            'start_date',
+            'is_current',
+            'end_date',
+            'description',
+        )
 
 
 class EducationModelSerializer:
