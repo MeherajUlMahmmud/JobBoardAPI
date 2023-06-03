@@ -47,7 +47,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        print(validated_data)
         is_applicant = validated_data.pop("is_applicant", "")
         is_organization = validated_data.pop("is_organization", "")
 
