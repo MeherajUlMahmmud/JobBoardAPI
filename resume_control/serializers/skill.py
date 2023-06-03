@@ -6,7 +6,13 @@ from resume_control.models import *
 class SkillModelSerializerMeta(serializers.ModelSerializer):
     class Meta:
         model = SkillModel
-        fields = ('uuid', 'resume', 'section_name', 'skill', 'proficiency', 'description')
+        fields = (
+            'uuid',
+            'resume',
+            'skill',
+            'proficiency',
+            'description',
+        )
 
 
 class SkillModelSerializer:

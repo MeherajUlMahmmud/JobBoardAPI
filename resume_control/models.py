@@ -124,7 +124,7 @@ class SkillModel(BaseModel):
     ]
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='skill')
     skill = models.CharField(max_length=255, null=False, blank=False)
-    proficiency = models.CharField(max_length=255, null=False, blank=False, choices=SKILL_PROFICIENCY)
+    proficiency = models.CharField(max_length=255, null=True, blank=True, choices=SKILL_PROFICIENCY)
     description = models.TextField(null=True, blank=True)
 
     class Meta:

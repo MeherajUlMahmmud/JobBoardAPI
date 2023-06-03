@@ -6,7 +6,16 @@ from resume_control.models import *
 class ReferenceModelSerializerMeta(serializers.ModelSerializer):
     class Meta:
         model = ReferenceModel
-        fields = ('uuid', 'user', 'title', 'description', 'link', 'is_active')
+        fields = (
+            'uuid',
+            'resume',
+            'name',
+            'email',
+            'phone',
+            'company_name',
+            'position',
+            'description',
+        )
 
 
 class ReferenceModelSerializer:
