@@ -2,7 +2,7 @@
 
 [//]: # (A sample Django project that serves as a RESTful API backend.)
 - JobBoard
-- GoCV
+- [GoCV](https://github.com/MeherajUlMahmmud/GoCV)
 
 ## Table of Contents
 
