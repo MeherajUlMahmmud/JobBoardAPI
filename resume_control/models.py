@@ -1,7 +1,7 @@
 from django.db import models
 
 from base.g_models import BaseModel
-from common.choices import WorkExperienceTypeChoices
+from common.choices import WorkExperienceTypeChoices, SkillProficiencyLevelChoices, LanguageProficiencyLevelChoices
 from user_control.models import UserModel
 
 
@@ -116,15 +116,10 @@ class EducationModel(BaseModel):
 
 
 class SkillModel(BaseModel):
-    SKILL_PROFICIENCY = [
-        ('Beginner', 'Beginner'),
-        ('Intermediate', 'Intermediate'),
-        ('Advanced', 'Advanced'),
-        ('Professional', 'Professional'),
-    ]
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='skill')
     skill = models.CharField(max_length=255, null=False, blank=False)
-    proficiency = models.CharField(max_length=255, null=True, blank=True, choices=SKILL_PROFICIENCY)
+    proficiency = models.CharField(max_length=255, null=True, blank=True, choices=SkillProficiencyLevelChoices.choices,
+                                   default=SkillProficiencyLevelChoices.BEGINNER, )
     description = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -138,16 +133,11 @@ class SkillModel(BaseModel):
 
 
 class LanguageModel(BaseModel):
-    LANGUAGE_PROFICIENCY = [
-        ('Beginner', 'Beginner'),
-        ('Intermediate', 'Intermediate'),
-        ('Advanced', 'Advanced'),
-        ('Professional', 'Professional'),
-    ]
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='language')
     language = models.CharField(max_length=255, null=False, blank=False, default='English')
-    proficiency = models.CharField(max_length=255, null=False, blank=False, choices=LANGUAGE_PROFICIENCY,
-                                   default='Professional')
+    proficiency = models.CharField(max_length=255, null=False, blank=False,
+                                   choices=LanguageProficiencyLevelChoices.choices,
+                                   default=LanguageProficiencyLevelChoices.BASIC, )
     description = models.TextField(null=True, blank=True)
 
     class Meta:
