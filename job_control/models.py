@@ -1,6 +1,7 @@
 from django.db import models
 
 from base.g_models import BaseModel
+from common.choices import SalaryCurrencyChoices, SalaryPeriodChoices
 from user_control.models import ApplicantModel
 
 
@@ -22,6 +23,14 @@ class JobModel(BaseModel):
     department = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     job_types = models.ManyToManyField(JobTypeModel, related_name='job_types')
+    is_fixed_salary = models.BooleanField(default=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    salary_currency = models.CharField(max_length=100, choices=SalaryCurrencyChoices.choices,
+                                       default=SalaryCurrencyChoices.BDT, )
+    salary_period = models.CharField(max_length=100, choices=SalaryPeriodChoices.choices,
+                                     default=SalaryPeriodChoices.MONTHLY, )
+    salary_min = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    salary_max = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
         verbose_name_plural = 'Jobs'

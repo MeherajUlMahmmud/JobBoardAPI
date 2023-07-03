@@ -1,9 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
-from .views import *
+from job_control.views.job import JobModelViewSet
+from job_control.views.job_type import JobTypeModelViewSet
+
+router = routers.DefaultRouter()
+router.register(r'api/job-type', JobTypeModelViewSet, basename='job-type')
+router.register(r'api/job', JobModelViewSet, basename='job')
+# router.register(r'api/job-application', JobApplicationModelViewSet, basename='job-application')
 
 urlpatterns = [
-    path('job-type', JobTypeAPIView.as_view()),
-    path('job', JobAPIView.as_view()),
-    path('job-application', JobApplicationAPIView.as_view()),
+    path('', include(router.urls)),
 ]

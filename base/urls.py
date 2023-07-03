@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import permissions, routers
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions, routers
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -18,10 +18,12 @@ schema_view = get_schema_view(
 )
 
 from user_control.urls import router as user_router
+from job_control.urls import router as job_router
 from resume_control.urls import router as resume_router
 
 router = routers.DefaultRouter()
 router.registry.extend(user_router.registry)
+router.registry.extend(job_router.registry)
 router.registry.extend(resume_router.registry)
 
 urlpatterns = [
