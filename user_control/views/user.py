@@ -16,3 +16,11 @@ class UserModelViewSet(ModelViewSet):
         if self.request.method == 'GET':
             return UserModelSerializer.List
         return UserModelSerializer.Write
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        email = data.get('email')
+        existing_user = UserModel.objects.filter(email=email).first()
+        if existing_user and existing_user.uuid != kwargs.get('pk'):
+            return self.http_method_not_allowed(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
