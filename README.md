@@ -53,10 +53,9 @@ This API uses token-based authentication. To obtain a token:
 2. Obtain a token by authenticating at /api/auth/login/.
 
 3. Include the obtained token in the request header as follows:
-
-```makefile
-Authorization: Token <token>
-```
+   ```makefile
+   Authorization: Token <token>
+   ```
 To access restricted endpoints, make sure your token has the necessary permissions.
 
 ## Testing
@@ -65,7 +64,6 @@ To run the tests for this project:
 Ensure that the project dependencies are installed.
 
 Run the following command:
-
 ```shell
 python manage.py test
 ```
