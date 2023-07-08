@@ -54,7 +54,7 @@ This API uses token-based authentication. To obtain a token:
 
 3. Include the obtained token in the request header as follows:
    ```makefile
-   Authorization: Token <token>
+   Authorization: Bearer <token>
    ```
 To access restricted endpoints, make sure your token has the necessary permissions.
 
