@@ -1,7 +1,7 @@
 from django.db import models
 
-from base.g_models import BaseModel
 from common.choices import WorkExperienceTypeChoices, SkillProficiencyLevelChoices, LanguageProficiencyLevelChoices
+from common.models import BaseModel
 from user_control.models import UserModel
 
 
@@ -117,9 +117,11 @@ class EducationModel(BaseModel):
 
 class SkillModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='skill')
-    skill = models.CharField(max_length=255, null=False, blank=False)
-    proficiency = models.CharField(max_length=255, null=True, blank=True, choices=SkillProficiencyLevelChoices.choices,
-                                   default=SkillProficiencyLevelChoices.BEGINNER, )
+    name = models.CharField(max_length=255, null=False, blank=False)
+    proficiency = models.CharField(
+        max_length=255, null=True, blank=True, choices=SkillProficiencyLevelChoices.choices,
+        default=SkillProficiencyLevelChoices.BEGINNER,
+    )
     description = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -129,15 +131,16 @@ class SkillModel(BaseModel):
         verbose_name_plural = 'Skills'
 
     def __str__(self):
-        return self.skill
+        return self.name
 
 
 class LanguageModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='language')
-    language = models.CharField(max_length=255, null=False, blank=False, default='English')
-    proficiency = models.CharField(max_length=255, null=False, blank=False,
-                                   choices=LanguageProficiencyLevelChoices.choices,
-                                   default=LanguageProficiencyLevelChoices.BASIC, )
+    name = models.CharField(max_length=255, null=False, blank=False, default='English')
+    proficiency = models.CharField(
+        max_length=255, null=False, blank=False, choices=LanguageProficiencyLevelChoices.choices,
+        default=LanguageProficiencyLevelChoices.BASIC,
+    )
     description = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -147,12 +150,12 @@ class LanguageModel(BaseModel):
         verbose_name_plural = 'Languages'
 
     def __str__(self):
-        return self.language
+        return self.name
 
 
 class InterestModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='interest')
-    interest = models.CharField(max_length=255, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
     description = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -162,7 +165,7 @@ class InterestModel(BaseModel):
         verbose_name_plural = 'Interests'
 
     def __str__(self):
-        return self.interest
+        return self.name
 
 
 class ReferenceModel(BaseModel):

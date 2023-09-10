@@ -1,8 +1,8 @@
-import os
 import datetime
+import os
 from pathlib import Path
 
-from django.conf import settings
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,12 +11,39 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ux3=k&$cyj4wr2ed1rfo%b5bm(z_8-lftc(hpo+h@#owwi+77*"
+SECRET_KEY = config('SECRET_KEY')
+
+DEVELOPMENT = config('ENV') == 'development'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', True)
+DEBUG = True if DEVELOPMENT else False
 
-ALLOWED_HOSTS = []
+CORS_ORIGIN_ALLOW_ALL = True
+
+MAX_UPLOAD_SIZE = 5242880  # 5MB
+
+CSRF_TRUSTED_ORIGINS = [
+    # 'https://api.pristinefacilities.au',
+    # 'https://www.api.pristinefacilities.au',
+]
+
+ALLOWED_HOSTS = [
+    '*', 'localhost',
+    # '54.206.214.24',
+    # 'api.pristinefacilities.au',
+    # 'www.api.pristinefacilities.au',
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
+    # 'https://www.pristinefacilities.au',
+    # 'https://pristinefacilities.au',
+    # 'https://www.api.pristinefacilities.au',
+    # 'https://api.pristinefacilities.au',
+]
 
 # Application definition
 
@@ -28,9 +55,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
     "django_filters",
     "jazzmin",
     'corsheaders',
+    'import_export',
+    'flower',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -122,8 +152,8 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
     # 'AUTH_HEADER_NAME': 'AUTHORIZATION',
-    'USER_ID_FIELD': 'uuid',
-    'USER_ID_CLAIM': 'user_uuid',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
 
 # Password validation

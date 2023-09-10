@@ -7,7 +7,7 @@ class OrganizationModelSerializerMeta(ModelSerializer):
     class Meta:
         model = OrganizationModel
         fields = [
-            'uuid',
+            'id',
             'name',
             'company_logo',
             'cover_picture',

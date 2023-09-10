@@ -3,7 +3,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from base.g_models import BaseModel
+from common.models import BaseModel
 
 
 class MyUserManager(BaseUserManager):
@@ -82,6 +82,8 @@ class UserModel(AbstractBaseUser, BaseModel, PermissionsMixin):
     password = models.CharField(max_length=255)
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_expiry = models.DateTimeField(null=True, blank=True)
+    reset_password_token = models.CharField(max_length=255, null=True, blank=True)
+    reset_password_token_expiry = models.DateTimeField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     is_applicant = models.BooleanField(default=False)
     is_organization = models.BooleanField(default=False)

@@ -7,7 +7,7 @@ class ApplicantModelSerializerMeta(ModelSerializer):
     class Meta:
         model = ApplicantModel
         fields = [
-            'uuid',
+            'id',
             'first_name',
             'last_name',
             'profile_picture',

@@ -1,6 +1,6 @@
 from django.db import models
 
-from base.g_models import BaseModel
+from common.models import BaseModel
 from common.choices import SalaryCurrencyChoices, SalaryPeriodChoices
 from user_control.models import ApplicantModel
 
@@ -31,6 +31,9 @@ class JobModel(BaseModel):
                                      default=SalaryPeriodChoices.MONTHLY, )
     salary_min = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     salary_max = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_vacancy = models.IntegerField(default=0)
+    total_applicants = models.IntegerField(default=0)
+    total_views = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Jobs'

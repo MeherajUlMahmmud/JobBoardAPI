@@ -10,7 +10,7 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view()),
     path('logout/', LogoutAPIView.as_view(), name="logout"),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('request-reset-email', RequestPasswordResetEmail.as_view(),
+    # path('request-reset-email/', RequestPasswordResetEmail.as_view(),
     #      name="request-reset-email"),
     # path('password-reset/<uidb64>/<token>',
     #      PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
