@@ -1,7 +1,7 @@
 # JobBoard REST API
 
 [//]: # (A sample Django project that serves as a RESTful API backend.)
-- JobBoard
+- [JobBoard](https://github.com/MeherajUlMahmmud/JobBoard)
 - [GoCV](https://github.com/MeherajUlMahmmud/GoCV)
 
 ## Table of Contents
