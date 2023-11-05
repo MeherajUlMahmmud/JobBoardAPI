@@ -16,6 +16,12 @@ class ResumeModelFilter(FilterSet):
         field_name="name", label="Resume Name",
         widget=TextInput(attrs={'placeholder': 'Resume Name', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",
         widget=CustomDateRangeFilterWidget(),
@@ -26,6 +32,8 @@ class ResumeModelFilter(FilterSet):
         fields = [
             'user',
             'name',
+            'is_active',
+            'is_deleted',
             'created_at',
         ]
 
@@ -35,11 +43,24 @@ class PersonalModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = PersonalModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -48,11 +69,24 @@ class ContactModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = ContactModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -61,11 +95,24 @@ class EducationModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = EducationModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -90,6 +137,16 @@ class ExperienceModelFilter(FilterSet):
         field_name="end_date", label="End Date",
         widget=CustomDateRangeFilterWidget(),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = ExperienceModel
@@ -99,6 +156,9 @@ class ExperienceModelFilter(FilterSet):
             'start_date',
             'is_current',
             'end_date',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -107,11 +167,24 @@ class SkillModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = SkillModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -120,11 +193,24 @@ class LanguageModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = LanguageModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -133,11 +219,24 @@ class InterestModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = InterestModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -146,11 +245,24 @@ class ReferenceModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = ReferenceModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -159,11 +271,24 @@ class AwardModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = AwardModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
 
 
@@ -172,9 +297,22 @@ class CertificationModelFilter(FilterSet):
         field_name="resume", label="Resume ID",
         widget=TextInput(attrs={'placeholder': 'Resume ID', 'class': 'form-control'}),
     )
+    is_active = BooleanFilter(
+        field_name="is_active", label="Is Active",
+    )
+    is_deleted = BooleanFilter(
+        field_name="is_deleted", label="Is Deleted",
+    )
+    created_at = DateFromToRangeFilter(
+        field_name="created_at", label="Created At",
+        widget=CustomDateRangeFilterWidget(),
+    )
 
     class Meta:
         model = CertificationModel
         fields = [
             'resume',
+            'is_active',
+            'is_deleted',
+            'created_at',
         ]
