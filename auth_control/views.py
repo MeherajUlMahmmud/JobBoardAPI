@@ -38,24 +38,25 @@ class RegisterAPIView(GenericAPIView):
     @transaction.atomic
     def post(self, request):
         try:
-            data = request.data
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            data = serializer.validated_data
             print(data)
+
+            name = data.get('name')
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            password = data.get('password')
             is_applicant = data.get('is_applicant')
             is_organization = data.get('is_organization')
-            name = request.data.get('name')
-            first_name = request.data.get('first_name')
-            last_name = request.data.get('last_name')
 
-            serializer = self.serializer_class(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-            user_data = serializer.data
-            user = UserModel.objects.get(email=user_data['email'])
             if is_applicant:
+                user = UserModel.objects.create_applicant(email=email, password=password)
                 applicant = ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
                 applicant.save()
             elif is_organization:
+                user = UserModel.objects.create_organization(email=email, password=password)
                 organization = OrganizationModel.objects.create(user=user, name=name)
                 organization.save()
 
@@ -82,7 +83,7 @@ class RegisterAPIView(GenericAPIView):
             #     fail_silently=False,
             # )
 
-            return Response({'data': user_data, 'message': 'User created successfully'},
+            return Response({'message': 'User created successfully'},
                             status=HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=HTTP_400_BAD_REQUEST)
