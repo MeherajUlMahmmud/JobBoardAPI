@@ -14,7 +14,10 @@ from user_control.models import ApplicantModel
 
 
 class ResumeModelViewSet(ModelViewSet):
-    http_method_names = ['get', 'head', 'options', 'post', 'put', 'patch', 'delete']
+    http_method_names = [
+        'get', 'head', 'options',
+        'post', 'put', 'patch', 'delete',
+    ]
     queryset = ResumeModel.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
@@ -33,8 +36,11 @@ class ResumeModelViewSet(ModelViewSet):
         resume = serializer.save()
         print(resume)
         applicant = ApplicantModel.objects.get(user=resume.user)
-        PersonalModel.objects.create(resume=resume, first_name=applicant.first_name,
-                                                last_name=applicant.last_name)
+        PersonalModel.objects.create(
+            resume=resume,
+            first_name=applicant.first_name,
+            last_name=applicant.last_name,
+        )
         ContactModel.objects.create(resume=resume, email=resume.user.email)
         return Response(serializer.data, status=201)
 
