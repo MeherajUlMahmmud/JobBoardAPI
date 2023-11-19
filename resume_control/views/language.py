@@ -14,7 +14,8 @@ from resume_control.serializers.language import LanguageModelSerializer
 
 
 class LanguageModelViewSet(ModelViewSet):
-    http_method_names = ['get', 'head', 'options', 'post', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'head', 'options',
+                         'post', 'put', 'patch', 'delete']
     queryset = LanguageModel.objects.all()
     permission_classes = [IsAuthenticated]
     filterset_class = LanguageModelFilter
@@ -48,7 +49,7 @@ class GetLanguageListAPIView(CustomListAPIView):
             )
 
 
-class GetDetailsLanguageAPIView(CustomRetrieveAPIView):
+class GetLanguageDetailsAPIView(CustomRetrieveAPIView):
     queryset = LanguageModel.objects.all()
     serializer_class = LanguageModelSerializer.List
 
@@ -88,7 +89,7 @@ class CreateLanguageAPIView(CustomCreateAPIView):
             )
 
 
-class UpdateLanguageAPIView(CustomUpdateAPIView):
+class UpdateLanguageDetailsAPIView(CustomUpdateAPIView):
     queryset = LanguageModel.objects.all()
     serializer_class = LanguageModelSerializer.Write
 

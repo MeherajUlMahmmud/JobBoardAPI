@@ -48,7 +48,7 @@ class GetCertificationListAPIView(CustomListAPIView):
             )
 
 
-class GetDetailsCertificationAPIView(CustomRetrieveAPIView):
+class GetCertificationDetailsAPIView(CustomRetrieveAPIView):
     queryset = CertificationModel.objects.all()
     serializer_class = CertificationModelSerializer.List
 
@@ -88,7 +88,7 @@ class CreateCertificationAPIView(CustomCreateAPIView):
             )
 
 
-class UpdateCertificationAPIView(CustomUpdateAPIView):
+class UpdateCertificationDetailsAPIView(CustomUpdateAPIView):
     queryset = CertificationModel.objects.all()
     serializer_class = CertificationModelSerializer.Write
 

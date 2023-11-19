@@ -49,7 +49,7 @@ class GetInterestListAPIView(CustomListAPIView):
             )
 
 
-class GetDetailsInterestAPIView(CustomRetrieveAPIView):
+class GetInterestDetailsAPIView(CustomRetrieveAPIView):
     queryset = InterestModel.objects.all()
     serializer_class = InterestModelSerializer.List
 
@@ -89,7 +89,7 @@ class CreateInterestAPIView(CustomCreateAPIView):
             )
 
 
-class UpdateInterestAPIView(CustomUpdateAPIView):
+class UpdateInterestDetailsAPIView(CustomUpdateAPIView):
     queryset = InterestModel.objects.all()
     serializer_class = InterestModelSerializer.Write
 

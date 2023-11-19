@@ -47,7 +47,7 @@ class GetAwardListAPIView(CustomListAPIView):
             )
 
 
-class GetDetailsAwardAPIView(CustomRetrieveAPIView):
+class GetAwardDetailsAPIView(CustomRetrieveAPIView):
     queryset = AwardModel.objects.all()
     serializer_class = AwardModelSerializer.List
 
@@ -87,7 +87,7 @@ class CreateAwardAPIView(CustomCreateAPIView):
             )
 
 
-class UpdateAwardAPIView(CustomUpdateAPIView):
+class UpdateAwardDetailsAPIView(CustomUpdateAPIView):
     queryset = AwardModel.objects.all()
     serializer_class = AwardModelSerializer.Write
 

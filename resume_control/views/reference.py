@@ -47,7 +47,7 @@ class GetReferenceListAPIView(CustomListAPIView):
             )
 
 
-class GetDetailsReferenceAPIView(CustomRetrieveAPIView):
+class GetReferenceDetailsAPIView(CustomRetrieveAPIView):
     queryset = ReferenceModel.objects.all()
     serializer_class = ReferenceModelSerializer.List
 
@@ -87,7 +87,7 @@ class CreateReferenceAPIView(CustomCreateAPIView):
             )
 
 
-class UpdateReferenceAPIView(CustomUpdateAPIView):
+class UpdateReferenceDetailsAPIView(CustomUpdateAPIView):
     queryset = ReferenceModel.objects.all()
     serializer_class = ReferenceModelSerializer.Write
 
