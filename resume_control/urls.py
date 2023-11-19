@@ -1,5 +1,8 @@
 from django.urls import path
 
+from resume_control.views.award import (
+    GetAwardListAPIView, GetAwardDetailsAPIView, CreateAwardAPIView, UpdateAwardDetailsAPIView,
+)
 from resume_control.views.contact import (
     GetContactDetailsAPIView, UpdateContactDetailsAPIView,
 )
@@ -35,4 +38,10 @@ urlpatterns = [
     # Contact URLs
     path('contact/<str:pk>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),
     path('contact/<str:pk>/update/', UpdateContactDetailsAPIView.as_view(), name='update_contact_details'),
+
+    # Award URLs
+    path('award/create/', CreateAwardAPIView.as_view(), name='create_award_list'),
+    path('award/<str:resume_id>/', GetAwardListAPIView.as_view(), name='get_award_list'),
+    path('award/<str:pk>/details/', GetAwardDetailsAPIView.as_view(), name='get_award_details'),
+    path('award/<str:pk>/update/', UpdateAwardDetailsAPIView.as_view(), name='update_award_details'),
 ]

@@ -29,7 +29,6 @@ class GetUserListAPIView(CustomListAPIView):
 class GetUserDetailsAPIView(CustomRetrieveAPIView):
     queryset = UserModel.objects.filter(is_active=True, is_deleted=False)
     serializer_class = UserModelSerializer.List
-    lookup_field = 'id'
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

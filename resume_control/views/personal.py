@@ -27,6 +27,7 @@ class UpdatePersonalDetailsAPIView(CustomUpdateAPIView):
         request_user = request.user
         if not request_user.check_object_permissions(request, instance):
             return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
+
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(

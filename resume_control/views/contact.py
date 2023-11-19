@@ -11,11 +11,11 @@ class GetContactDetailsAPIView(CustomRetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        if request.user.check_object_permissions(request, instance):
-            serializer = self.get_serializer(instance)
-            return Response(serializer.data)
-        else:
+        if not request.user.check_object_permissions(request, instance):
             return Response(status=403)
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class UpdateContactDetailsAPIView(CustomUpdateAPIView):
@@ -24,12 +24,12 @@ class UpdateContactDetailsAPIView(CustomUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        if request.user.check_object_permissions(request, instance):
-            serializer = self.get_serializer(instance, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(
-                updated_by=request.user
-            )
-            return Response(serializer.data)
-        else:
+        if not request.user.check_object_permissions(request, instance):
             return Response(status=403)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(
+            updated_by=request.user
+        )
+        return Response(serializer.data)
