@@ -81,7 +81,7 @@ class ResendVerificationEmailSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255, min_length=3)
-    password = serializers.CharField(max_length=68, min_length=6, write_only=True)
+    password = serializers.CharField(write_only=True)
 
     def validate(self, data):
         email = data.get("email", "")

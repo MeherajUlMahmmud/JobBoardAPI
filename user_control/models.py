@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from common.models import BaseModel
@@ -110,6 +110,15 @@ class UserModel(AbstractBaseUser, BaseModel, PermissionsMixin):
             'refresh': str(tokens),
             'access': str(tokens.access_token),
         }
+
+    def check_object_permissions(self, request, obj):
+        if request.user.is_superuser:
+            return True
+        if request.user.is_staff:
+            return True
+        if request.user == obj.created_by:
+            return True
+        return False
 
     def has_perm(self, perm, obj=None):
         return self.is_admin

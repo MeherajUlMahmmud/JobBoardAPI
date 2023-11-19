@@ -1,14 +1,35 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
-from resume_control.custom_filters import ContactModelFilter
+from common.custom_view import CustomRetrieveAPIView, CustomUpdateAPIView
 from resume_control.models import ContactModel
 from resume_control.serializers.contact import ContactModelSerializer
 
 
-class ContactModelViewSet(ModelViewSet):
-    http_method_names = ['get', 'head', 'options', 'post', 'put', 'patch', 'delete']
-    queryset = ContactModel.objects.all().order_by('-created_at')
-    serializer_class = ContactModelSerializer
-    permission_classes = [IsAuthenticated]
-    filterset_class = ContactModelFilter
+class GetContactDetailsAPIView(CustomRetrieveAPIView):
+    queryset = ContactModel.objects.all()
+    serializer_class = ContactModelSerializer.List
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.check_object_permissions(request, instance):
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        else:
+            return Response(status=403)
+
+
+class UpdateContactDetailsAPIView(CustomUpdateAPIView):
+    queryset = ContactModel.objects.all()
+    serializer_class = ContactModelSerializer.Write
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.check_object_permissions(request, instance):
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(
+                updated_by=request.user
+            )
+            return Response(serializer.data)
+        else:
+            return Response(status=403)

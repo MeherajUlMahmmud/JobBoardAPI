@@ -18,13 +18,9 @@ schema_view = get_schema_view(
 )
 
 from user_control.urls import router as user_router
-from job_control.urls import router as job_router
-from resume_control.urls import router as resume_router
 
 router = routers.DefaultRouter()
 router.registry.extend(user_router.registry)
-router.registry.extend(job_router.registry)
-router.registry.extend(resume_router.registry)
 
 urlpatterns = [
     # path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
@@ -34,4 +30,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/auth/', include('auth_control.urls')),
     path('api/', include('user_control.urls')),
+    path('api/', include('job_control.urls')),
+    path('api/', include('resume_control.urls')),
 ]

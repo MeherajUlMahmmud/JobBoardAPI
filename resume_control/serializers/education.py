@@ -1,13 +1,13 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from resume_control.models import *
 
 
-class EducationModelSerializerMeta(serializers.ModelSerializer):
+class EducationModelSerializerMeta(ModelSerializer):
     class Meta:
         model = EducationModel
         fields = (
-            'uuid',
+            'id',
             'resume',
             'school_name',
             'degree',

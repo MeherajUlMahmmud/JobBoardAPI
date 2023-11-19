@@ -21,7 +21,7 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
 
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
-                'uuid',
+                'id',
                 'is_education_visible',
                 'is_experience_visible',
                 'is_skill_visible',
@@ -37,7 +37,7 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
     class Lite(ResumeModelSerializerMeta):
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
-                'uuid',
+                'id',
                 'created_at',
                 'updated_at',
             ]

@@ -37,16 +37,10 @@ class CustomCreateAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
 
-    def perform_create(self, serializer):
-        serializer.save(created_at=timezone.now())
-
 
 class CustomUpdateAPIView(UpdateAPIView):
     http_method_names = ['put', 'patch']
     permission_classes = [IsAuthenticated]
-
-    def perform_update(self, serializer):
-        serializer.save(updated_at=timezone.now())
 
 
 class CustomDestroyAPIView(DestroyAPIView):
