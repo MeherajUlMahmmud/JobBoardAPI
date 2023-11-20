@@ -3,26 +3,35 @@ from django.urls import path
 from resume_control.views.award import (
     GetAwardListAPIView, GetAwardDetailsAPIView, CreateAwardAPIView, UpdateAwardDetailsAPIView,
 )
+from resume_control.views.certification import (
+    CreateCertificationAPIView, GetCertificationDetailsAPIView, GetCertificationListAPIView,
+    UpdateCertificationDetailsAPIView,
+)
 from resume_control.views.contact import (
     GetContactDetailsAPIView, UpdateContactDetailsAPIView,
+)
+from resume_control.views.interest import (
+    CreateInterestAPIView, GetInterestListAPIView, GetInterestDetailsAPIView, UpdateInterestDetailsAPIView,
+)
+from resume_control.views.language import (
+    CreateLanguageAPIView, GetLanguageListAPIView, GetLanguageDetailsAPIView, UpdateLanguageDetailsAPIView,
 )
 from resume_control.views.personal import (
     GetPersonalDetailsAPIView, UpdatePersonalDetailsAPIView,
 )
+from resume_control.views.reference import (
+    CreateReferenceAPIView, GetReferenceListAPIView, GetReferenceDetailsAPIView, UpdateReferenceDetailsAPIView,
+)
 from resume_control.views.resume import (
     GetResumeListAPIView, CreateResumeAPIView, GetResumeDetailsAPIView,
 )
+from resume_control.views.skill import (
+    CreateSkillAPIView, GetSkillListAPIView, GetSkillDetailsAPIView, UpdateSkillDetailsAPIView,
+)
 
 # router = routers.DefaultRouter()
-# router.register(r'api/personal', PersonalModelViewSet, basename='personal')
-# router.register(r'api/contact', ContactModelViewSet, basename='contact')
 # router.register(r'api/experience', ExperienceModelViewSet, basename='experience')
 # router.register(r'api/education', EducationModelViewSet, basename='education')
-# router.register(r'api/skill', SkillModelViewSet, basename='skill')
-# router.register(r'api/language', LanguageModelViewSet, basename='language')
-# router.register(r'api/interest', InterestModelViewSet, basename='interest')
-# router.register(r'api/reference', ReferenceModelViewSet, basename='reference')
-# router.register(r'api/award', AwardModelViewSet, basename='award')
 # router.register(r'api/certification', CertificationModelViewSet, basename='certification')
 
 urlpatterns = [
@@ -38,6 +47,40 @@ urlpatterns = [
     # Contact URLs
     path('contact/<str:pk>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),
     path('contact/<str:pk>/update/', UpdateContactDetailsAPIView.as_view(), name='update_contact_details'),
+
+    # Skill URLs
+    path('skill/create/', CreateSkillAPIView.as_view(), name='create_skill_list'),
+    path('skill/<str:resume_id>/', GetSkillListAPIView.as_view(), name='get_skill_list'),
+    path('skill/<str:pk>/details/', GetSkillDetailsAPIView.as_view(), name='get_skill_details'),
+    path('skill/<str:pk>/update/', UpdateSkillDetailsAPIView.as_view(), name='update_skill_details'),
+
+    # Language URLs
+    path('language/create/', CreateLanguageAPIView.as_view(), name='create_language_list'),
+    path('language/<str:resume_id>/', GetLanguageListAPIView.as_view(), name='get_language_list'),
+    path('language/<str:pk>/details/', GetLanguageDetailsAPIView.as_view(), name='get_language_details'),
+    path('language/<str:pk>/update/', UpdateLanguageDetailsAPIView.as_view(), name='update_language_details'),
+
+    # Interest URLs
+    path('interest/create/', CreateInterestAPIView.as_view(), name='create_interest_list'),
+    path('interest/<str:resume_id>/', GetInterestListAPIView.as_view(), name='get_interest_list'),
+    path('interest/<str:pk>/details/', GetInterestDetailsAPIView.as_view(), name='get_interest_details'),
+    path('interest/<str:pk>/update/', UpdateInterestDetailsAPIView.as_view(), name='update_interest_details'),
+
+    # Reference URLs
+    path('reference/create/', CreateReferenceAPIView.as_view(), name='create_reference_list'),
+    path('reference/<str:resume_id>/', GetReferenceListAPIView.as_view(), name='get_reference_list'),
+    path('reference/<str:pk>/details/', GetReferenceDetailsAPIView.as_view(), name='get_reference_details'),
+    path('reference/<str:pk>/update/', UpdateReferenceDetailsAPIView.as_view(), name='update_reference_details'),
+
+    # Certification URLs
+    path('certification/create/', CreateCertificationAPIView.as_view(), name='create_certification_list'),
+    path('certification/<str:resume_id>/', GetCertificationListAPIView.as_view(), name='get_certification_list'),
+    path('certification/<str:pk>/details/', GetCertificationDetailsAPIView.as_view(), name='get_certification_details'),
+    path(
+        'certification/<str:pk>/update/',
+        UpdateCertificationDetailsAPIView.as_view(),
+        name='update_certification_details',
+    ),
 
     # Award URLs
     path('award/create/', CreateAwardAPIView.as_view(), name='create_award_list'),
