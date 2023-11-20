@@ -6,6 +6,7 @@ from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 from common.custom_view import (
     CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView,
 )
+from resume_control.custom_filters import AwardModelFilter
 from resume_control.models import AwardModel, ResumeModel
 from resume_control.serializers.award import AwardModelSerializer
 
@@ -14,6 +15,7 @@ class GetAwardListAPIView(CustomListAPIView):
     queryset = AwardModel.objects.all()
     serializer_class = AwardModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_class = AwardModelFilter
 
     def get(self, request, *args, **kwargs):
         resume = ResumeModel.objects.get(id=kwargs['resume_id'])
