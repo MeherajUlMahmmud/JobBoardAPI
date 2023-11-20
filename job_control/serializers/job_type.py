@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class JobTypeModelSerializerMeta(ModelSerializer):
     class Meta:
         model = JobTypeModel
+        ref_name = 'JobTypeModelSerializer'
         fields = [
             'name',
         ]

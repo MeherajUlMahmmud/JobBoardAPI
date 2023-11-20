@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class LanguageModelSerializerMeta(ModelSerializer):
     class Meta:
         model = LanguageModel
+        ref_name = 'LanguageModelSerializer'
         fields = [
             'resume',
             'name',

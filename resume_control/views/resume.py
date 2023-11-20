@@ -28,7 +28,7 @@ class GetResumeListAPIView(CustomListAPIView):
 
 
 class GetResumeDetailsAPIView(CustomRetrieveAPIView):
-    queryset = ResumeModel.objects.filter(is_active=True, is_deleted=False)
+    queryset = ResumeModel.objects.all()
     serializer_class = ResumeModelSerializer.List
 
     def retrieve(self, request, *args, **kwargs):
@@ -36,17 +36,19 @@ class GetResumeDetailsAPIView(CustomRetrieveAPIView):
         if not request.user.check_object_permissions(request, instance):
             return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
 
-        resume_serializer_data = ResumeModelSerializer.List(instance).data
+        resume_data = ResumeModelSerializer.List(instance).data
 
         personal = PersonalModel.objects.filter(resume=instance).first()
-        personal_serializer_data = PersonalModelSerializer(personal).data
-        resume_serializer_data['personal'] = personal_serializer_data
+        personal_data = PersonalModelSerializer.List(personal).data
 
         contact = ContactModel.objects.filter(resume=instance).first()
-        contact_serializer_data = ContactModelSerializer(contact).data
-        resume_serializer_data['contact'] = contact_serializer_data
+        contact_data = ContactModelSerializer.List(contact).data
 
-        return Response(resume_serializer_data)
+        return Response({
+            'resume': resume_data,
+            'personal': personal_data,
+            'contact': contact_data,
+        })
 
 
 class CreateResumeAPIView(CustomCreateAPIView):
@@ -55,18 +57,23 @@ class CreateResumeAPIView(CustomCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
+        current_user = request.user
         serializer = self.get_serializer(data=data)
-        resume = serializer.save(created_by=self.request.user)
-        applicant = ApplicantModel.objects.get(user=resume.user)
+        serializer.is_valid(raise_exception=True)
+        resume = serializer.save(
+            user=current_user,
+            created_by=current_user,
+        )
+        applicant = ApplicantModel.objects.get(user=current_user)
         PersonalModel.objects.create(
             resume=resume,
             first_name=applicant.first_name,
             last_name=applicant.last_name,
-            created_by=self.request.user,
+            created_by=current_user,
         )
         ContactModel.objects.create(
             resume=resume,
             email=resume.user.email,
-            created_by=self.request.user,
+            created_by=current_user,
         )
         return Response(serializer.data, status=201)

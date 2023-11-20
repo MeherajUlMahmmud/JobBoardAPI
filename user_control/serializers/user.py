@@ -1,14 +1,13 @@
 from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 
-from .applicant import ApplicantModelSerializer
-from .organization import OrganizationModelSerializer
-from ..models import UserModel
+from user_control.models import UserModel
 
 
 class UserModelSerializerMeta(ModelSerializer):
     class Meta:
         model = UserModel
+        ref_name = 'UserModelSerializer'
         fields = [
             'id',
             'email',

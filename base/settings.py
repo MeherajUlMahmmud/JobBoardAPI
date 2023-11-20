@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'import_export',
     'flower',
+    'rest_framework_swagger',  # Swagger
+    'drf_yasg',  # Yet Another Swagger generator
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,7 +70,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg',
 ]
 
 SWAGGER_SETTINGS = {

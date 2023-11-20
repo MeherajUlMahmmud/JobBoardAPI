@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class PersonalModelSerializerMeta(ModelSerializer):
     class Meta:
         model = PersonalModel
+        ref_name = 'PersonalModelSerializer'
         fields = [
             'first_name',
             'last_name',

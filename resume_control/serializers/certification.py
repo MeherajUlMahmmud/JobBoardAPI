@@ -7,8 +7,8 @@ from user_control.serializers.user import UserModelSerializer
 class CertificationModelSerializerMeta(ModelSerializer):
     class Meta:
         model = CertificationModel
+        ref_name = 'CertificationModelSerializer'
         fields = [
-            'user',
             'title',
             'description',
             'link',

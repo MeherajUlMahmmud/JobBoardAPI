@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class AwardModelSerializerMeta(ModelSerializer):
     class Meta:
         model = AwardModel
+        ref_name = 'AwardModelSerializer'
         fields = [
             'resume',
             'title',

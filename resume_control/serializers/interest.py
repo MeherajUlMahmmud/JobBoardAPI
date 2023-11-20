@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class InterestModelSerializerMeta(ModelSerializer):
     class Meta:
         model = InterestModel
+        ref_name = 'InterestModelSerializer'
         fields = [
             'resume',
             'name',
@@ -29,7 +30,7 @@ class InterestModelSerializer:
             ]
 
     class Write(InterestModelSerializerMeta):
-        title = CharField(max_length=255, required=True)
+        name = CharField(max_length=255, required=True)
 
         class Meta(InterestModelSerializerMeta.Meta):
             fields = InterestModelSerializerMeta.Meta.fields

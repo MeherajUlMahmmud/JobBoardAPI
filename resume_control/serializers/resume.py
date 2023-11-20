@@ -9,8 +9,8 @@ from user_control.serializers.user import UserModelSerializer
 class ResumeModelSerializerMeta(ModelSerializer):
     class Meta:
         model = ResumeModel
+        ref_name = 'ResumeModelSerializer'
         fields = [
-            'user',
             'name',
         ]
 
@@ -22,6 +22,7 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
                 'id',
+                'user',
                 'is_education_visible',
                 'is_experience_visible',
                 'is_skill_visible',
@@ -40,16 +41,6 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
                 'id',
                 'created_at',
                 'updated_at',
-            ]
-
-    class Detail(ResumeModelSerializerMeta):
-        user = UserModelSerializer.List()
-        personal = PersonalModelSerializer()
-        contact = ContactModelSerializer()
-
-        class Meta(ResumeModelSerializerMeta.Meta):
-            fields = ResumeModelSerializerMeta.Meta.fields + [
-                'uuid', 'personal', 'contact', 'created_at', 'updated_at',
             ]
 
     class Write(ResumeModelSerializerMeta):

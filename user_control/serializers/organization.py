@@ -6,6 +6,7 @@ from user_control.models import OrganizationModel
 class OrganizationModelSerializerMeta(ModelSerializer):
     class Meta:
         model = OrganizationModel
+        ref_name = 'OrganizationModelSerializer'
         fields = [
             'id',
             'name',

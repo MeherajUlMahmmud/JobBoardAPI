@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class ReferenceModelSerializerMeta(ModelSerializer):
     class Meta:
         model = ReferenceModel
+        ref_name = 'ReferenceModelSerializer'
         fields = [
             'resume',
             'name',

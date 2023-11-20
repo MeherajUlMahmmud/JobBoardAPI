@@ -6,6 +6,7 @@ from resume_control.models import *
 class EducationModelSerializerMeta(ModelSerializer):
     class Meta:
         model = EducationModel
+        ref_name = 'EducationModelSerializer'
         fields = (
             'id',
             'resume',

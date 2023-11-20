@@ -7,6 +7,7 @@ from user_control.serializers.user import UserModelSerializer
 class ContactModelSerializerMeta(ModelSerializer):
     class Meta:
         model = ContactModel
+        ref_name = 'ContactModelSerializer'
         fields = [
             'phone_number',
             'email',

@@ -14,7 +14,6 @@ class BaseModel(models.Model):
         'user_control.UserModel', related_name='%(class)s_updated_by',
         on_delete=models.SET_NULL, null=True, blank=True,
     )
-    extra_fields = models.JSONField(null=True, blank=True)
 
     class Meta:  # This is an abstract class and will not be created in the database
         abstract = True

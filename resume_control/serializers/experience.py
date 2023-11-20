@@ -7,6 +7,7 @@ from resume_control.serializers.resume import ResumeModelSerializer
 class ExperienceModelSerializerMeta(serializers.ModelSerializer):
     class Meta:
         model = ExperienceModel
+        ref_name = 'ExperienceModelSerializer'
         fields = (
             'uuid',
             'resume',
