@@ -2,7 +2,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
-from rest_framework.viewsets import ModelViewSet
 
 from common.custom_view import (
     CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView,
@@ -16,6 +15,7 @@ class GetLanguageListAPIView(CustomListAPIView):
     queryset = LanguageModel.objects.all()
     serializer_class = LanguageModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_class = LanguageModelFilter
 
     def get(self, request, *args, **kwargs):
         resume = ResumeModel.objects.get(id=kwargs['resume_id'])
