@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 
@@ -11,23 +13,24 @@ from resume_control.serializers.award import AwardModelSerializer
 class GetAwardListAPIView(CustomListAPIView):
     queryset = AwardModel.objects.all()
     serializer_class = AwardModelSerializer.List
-    lookup_field = 'resume_id'
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
 
     def get(self, request, *args, **kwargs):
         resume = ResumeModel.objects.get(id=kwargs['resume_id'])
-        if request.user.check_object_permissions(request, resume):
-            awards = AwardModel.objects.filter(resume_id=resume.id)
-            return Response(
-                self.serializer_class(awards, many=True).data,
-                status=HTTP_200_OK
-            )
-        else:
+
+        if not request.user.check_object_permissions(request, resume):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
+
+        awards = AwardModel.objects.filter(resume_id=resume.id)
+        return Response(
+            self.serializer_class(awards, many=True).data,
+            status=HTTP_200_OK
+        )
 
 
 class GetAwardDetailsAPIView(CustomRetrieveAPIView):
