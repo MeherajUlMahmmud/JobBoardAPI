@@ -1,6 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
@@ -9,44 +8,30 @@ from common.custom_view import (
     CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView,
 )
 from resume_control.custom_filters import LanguageModelFilter
-from resume_control.models import LanguageModel
+from resume_control.models import LanguageModel, ResumeModel
 from resume_control.serializers.language import LanguageModelSerializer
-
-
-class LanguageModelViewSet(ModelViewSet):
-    http_method_names = ['get', 'head', 'options',
-                         'post', 'put', 'patch', 'delete']
-    queryset = LanguageModel.objects.all()
-    permission_classes = [IsAuthenticated]
-    filterset_class = LanguageModelFilter
-
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return LanguageModelSerializer.Write
-        return LanguageModelSerializer.List
 
 
 class GetLanguageListAPIView(CustomListAPIView):
     queryset = LanguageModel.objects.all()
     serializer_class = LanguageModelSerializer.List
-    lookup_field = 'resume_id'
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
 
     def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        requested_user = request.user
-        if requested_user.is_staff or requested_user.is_superuser or requested_user.id == instance.user.id:
-            languages = LanguageModel.objects.filter(resume_id=instance.id)
-            return Response(
-                self.serializer_class(languages, many=True).data,
-                status=HTTP_200_OK
-            )
-        else:
+        resume = ResumeModel.objects.get(id=kwargs['resume_id'])
+
+        if not request.user.check_object_permissions(request, resume):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
+        languages = LanguageModel.objects.filter(resume_id=resume.id)
+        return Response(
+            self.serializer_class(languages, many=True).data,
+            status=HTTP_200_OK
+        )
 
 
 class GetLanguageDetailsAPIView(CustomRetrieveAPIView):
@@ -55,38 +40,36 @@ class GetLanguageDetailsAPIView(CustomRetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        requested_user = request.user
-        if requested_user.is_staff or requested_user.is_superuser or requested_user.id == instance.resume.user.id:
-            return Response(
-                self.serializer_class(instance).data,
-                status=HTTP_200_OK
-            )
-        else:
+        if not request.user.check_object_permissions(request, instance):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
+        return Response(
+            self.serializer_class(instance).data,
+            status=HTTP_200_OK
+        )
 
 
 class CreateLanguageAPIView(CustomCreateAPIView):
     queryset = LanguageModel.objects.all()
     serializer_class = LanguageModelSerializer.Write
-    lookup_field = 'resume_id'
 
     def post(self, request, *args, **kwargs):
-        instance = self.get_object()
-        requested_user = request.user
-        if requested_user.is_staff or requested_user.is_superuser or requested_user.id == instance.user.id:
-            return self.create(request, *args, **kwargs)
-        else:
-            return Response(
-                {
-                    'detail': 'You don\'t have permission to perform this action.'
-                },
-                status=HTTP_403_FORBIDDEN
-            )
+        data = request.data
+        serializer = self.serializer_class(
+            data=data, context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(
+            created_by=request.user,
+        )
+        return Response(
+            serializer.data,
+            status=HTTP_200_OK
+        )
 
 
 class UpdateLanguageDetailsAPIView(CustomUpdateAPIView):
@@ -95,13 +78,13 @@ class UpdateLanguageDetailsAPIView(CustomUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        requested_user = request.user
-        if requested_user.is_staff or requested_user.is_superuser or requested_user.id == instance.resume_id:
-            return self.partial_update(request, *args, **kwargs)
-        else:
-            return Response(
-                {
-                    'detail': 'You don\'t have permission to perform this action.'
-                },
-                status=HTTP_403_FORBIDDEN
-            )
+        data = request.data
+        serializer = self.serializer_class(data=data, context={'request': request}, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(
+            updated_by=request.user,
+        )
+        return Response(
+            serializer.data,
+            status=HTTP_200_OK
+        )
