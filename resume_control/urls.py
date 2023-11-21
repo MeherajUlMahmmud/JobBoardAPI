@@ -10,6 +10,12 @@ from resume_control.views.certification import (
 from resume_control.views.contact import (
     GetContactDetailsAPIView, UpdateContactDetailsAPIView,
 )
+from resume_control.views.education import (
+    GetEducationListAPIView, GetEducationDetailsAPIView, CreateEducationAPIView, UpdateEducationDetailsAPIView,
+)
+from resume_control.views.experience import (
+    GetExperienceListAPIView, GetExperienceDetailsAPIView, CreateExperienceAPIView, UpdateExperienceDetailsAPIView,
+)
 from resume_control.views.interest import (
     CreateInterestAPIView, GetInterestListAPIView, GetInterestDetailsAPIView, UpdateInterestDetailsAPIView,
 )
@@ -29,11 +35,6 @@ from resume_control.views.skill import (
     CreateSkillAPIView, GetSkillListAPIView, GetSkillDetailsAPIView, UpdateSkillDetailsAPIView,
 )
 
-# router = routers.DefaultRouter()
-# router.register(r'api/experience', ExperienceModelViewSet, basename='experience')
-# router.register(r'api/education', EducationModelViewSet, basename='education')
-# router.register(r'api/certification', CertificationModelViewSet, basename='certification')
-
 urlpatterns = [
     # Resume URLs
     path('resume/', GetResumeListAPIView.as_view()),
@@ -47,6 +48,18 @@ urlpatterns = [
     # Contact URLs
     path('contact/<str:pk>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),
     path('contact/<str:pk>/update/', UpdateContactDetailsAPIView.as_view(), name='update_contact_details'),
+
+    # Experience URLs
+    path('experience/<str:resume_id>/', GetExperienceListAPIView.as_view(), name='get_experience_list'),
+    path('experience/<str:pk>/details/', GetExperienceDetailsAPIView.as_view(), name='get_experience_details'),
+    path('experience/create/', CreateExperienceAPIView.as_view(), name='create_experience_list'),
+    path('experience/<str:pk>/update/', UpdateExperienceDetailsAPIView.as_view(), name='update_experience_details'),
+
+    # Education URLs
+    path('education/<str:resume_id>/', GetEducationListAPIView.as_view(), name='get_education_list'),
+    path('education/<str:pk>/details/', GetEducationDetailsAPIView.as_view(), name='get_education_details'),
+    path('education/create/', CreateEducationAPIView.as_view(), name='create_education_list'),
+    path('education/<str:pk>/update/', UpdateEducationDetailsAPIView.as_view(), name='update_education_details'),
 
     # Skill URLs
     path('skill/create/', CreateSkillAPIView.as_view(), name='create_skill_list'),
