@@ -1,5 +1,7 @@
 from django.forms import Select, TextInput
-from django_filters.rest_framework import FilterSet, BooleanFilter, CharFilter, ChoiceFilter, DateFromToRangeFilter
+from django_filters.rest_framework import (
+    FilterSet, BooleanFilter, CharFilter, ChoiceFilter, DateFromToRangeFilter,
+)
 
 from common.custom_widgets import CustomDateRangeFilterWidget
 from job_control.models import JobTypeModel, JobModel
@@ -89,4 +91,3 @@ class JobModelFilter(FilterSet):
             'is_deleted',
             'created_at',
         ]
-
