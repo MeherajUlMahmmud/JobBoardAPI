@@ -1,10 +1,14 @@
 from django.forms import Select, TextInput
-from django_filters.rest_framework import FilterSet, BooleanFilter, CharFilter, ChoiceFilter, DateFromToRangeFilter
+from django_filters.rest_framework import (
+    FilterSet, BooleanFilter, CharFilter, ChoiceFilter, DateFromToRangeFilter,
+)
 
 from common.choices import WorkExperienceTypeChoices
 from common.custom_widgets import CustomDateRangeFilterWidget
-from resume_control.models import ResumeModel, PersonalModel, ContactModel, EducationModel, ExperienceModel, SkillModel, \
-    LanguageModel, InterestModel, ReferenceModel, AwardModel, CertificationModel
+from resume_control.models import (
+    ResumeModel, PersonalModel, ContactModel, EducationModel, ExperienceModel, SkillModel, LanguageModel, InterestModel,
+    ReferenceModel, AwardModel, CertificationModel,
+)
 
 
 class ResumeModelFilter(FilterSet):
