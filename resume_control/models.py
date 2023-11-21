@@ -1,6 +1,8 @@
 from django.db import models
 
-from common.choices import WorkExperienceTypeChoices, SkillProficiencyLevelChoices, LanguageProficiencyLevelChoices
+from common.choices import (
+    WorkExperienceTypeChoices, SkillProficiencyLevelChoices, LanguageProficiencyLevelChoices,
+)
 from common.models import BaseModel
 from user_control.models import UserModel
 
