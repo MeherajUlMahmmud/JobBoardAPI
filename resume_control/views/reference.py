@@ -20,19 +20,27 @@ class GetReferenceListAPIView(CustomListAPIView):
     def get(self, request, *args, **kwargs):
         resume = ResumeModel.objects.get(id=kwargs['resume_id'])
 
-        if not request.user.check_object_permissions(request, resume):
+        if resume:
+            if not request.user.check_object_permissions(request, resume):
+                return Response(
+                    {
+                        'detail': 'You don\'t have permission to perform this action.'
+                    },
+                    status=HTTP_403_FORBIDDEN
+                )
+
+            references = ReferenceModel.objects.filter(resume_id=resume.id)
+            return Response(
+                self.serializer_class(references, many=True).data,
+                status=HTTP_200_OK
+            )
+        else:
             return Response(
                 {
-                    'detail': 'You don\'t have permission to perform this action.'
+                    'detail': 'Resume not found.'
                 },
-                status=HTTP_403_FORBIDDEN
+                status=HTTP_403_FORBIDDEN,
             )
-
-        references = ReferenceModel.objects.filter(resume_id=resume.id)
-        return Response(
-            self.serializer_class(references, many=True).data,
-            status=HTTP_200_OK
-        )
 
 
 class GetReferenceDetailsAPIView(CustomRetrieveAPIView):

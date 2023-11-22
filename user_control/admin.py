@@ -25,7 +25,6 @@ class UserModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         (None, {'fields': (
             'email',
             'password', 'reset_password_token', 'reset_password_token_expiry',
-            'extra_fields',
         )}),
         ('Permissions', {'fields': (
             'is_applicant', 'is_organization', 'is_staff', 'is_superuser',
@@ -52,7 +51,6 @@ class ApplicantModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'user',
             'first_name', 'last_name',
             'profile_picture', 'phone_number',
-            'extra_fields',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
@@ -72,7 +70,7 @@ class OrganizationModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         (None, {'fields': (
             'user',
             'name', 'company_logo', 'cover_picture', 'phone_number', 'website',
-            'description', 'extra_fields',
+            'description',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),

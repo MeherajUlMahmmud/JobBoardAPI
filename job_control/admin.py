@@ -15,13 +15,10 @@ class JobTypeAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
     fieldsets = (
         (None, {'fields': (
             'name',
-            'extra_fields',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
     )
-
-
 
 
 @admin.register(JobModel)
@@ -40,7 +37,6 @@ class JobAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'title', 'description', 'organization', 'department', 'location', 'job_types',
             'is_fixed_salary', 'salary', 'salary_currency', 'salary_period', 'salary_min', 'salary_max',
             'total_vacancy',
-            'extra_fields',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
@@ -61,7 +57,6 @@ class JobApplicationAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
     fieldsets = (
         (None, {'fields': (
             'job', 'applicant', 'cover_letter', 'status',
-            'extra_fields',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),

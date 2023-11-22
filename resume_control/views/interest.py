@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
@@ -18,7 +19,7 @@ class GetInterestListAPIView(CustomListAPIView):
     filterset_class = InterestModelFilter
 
     def get(self, request, *args, **kwargs):
-        resume = ResumeModel.objects.get(id=kwargs['resume_id'])
+        resume = get_object_or_404(ResumeModel, id=kwargs['resume_id'])
 
         if not request.user.check_object_permissions(request, resume):
             return Response(

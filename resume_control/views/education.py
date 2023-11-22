@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
@@ -17,9 +18,14 @@ class GetEducationListAPIView(CustomListAPIView):
     serializer_class = EducationModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = EducationModelFilter
+    search_fields = [
+        'school_name',
+        'degree',
+        'department',
+    ]
 
     def get(self, request, *args, **kwargs):
-        resume = ResumeModel.objects.get(id=kwargs['resume_id'])
+        resume = get_object_or_404(ResumeModel, id=kwargs['resume_id'])
 
         if not request.user.check_object_permissions(request, resume):
             return Response(
@@ -65,7 +71,9 @@ class CreateEducationAPIView(CustomCreateAPIView):
             data=data, context={'request': request},
         )
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializer.save(
+                created_by=request.user,
+            )
             return Response(
                 serializer.data,
                 status=HTTP_200_OK

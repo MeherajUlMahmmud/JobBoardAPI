@@ -37,9 +37,6 @@ class EducationModelSerializer:
             ]
 
     class Write(EducationModelSerializerMeta):
-        school_name = CharField(max_length=255, required=True)
-        degree = CharField(max_length=255, required=True)
-        department = CharField(max_length=255, required=True)
 
         class Meta(EducationModelSerializerMeta.Meta):
             fields = EducationModelSerializerMeta.Meta.fields

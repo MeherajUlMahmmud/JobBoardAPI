@@ -50,15 +50,15 @@ urlpatterns = [
     path('contact/<str:pk>/update/', UpdateContactDetailsAPIView.as_view(), name='update_contact_details'),
 
     # Experience URLs
+    path('experience/create/', CreateExperienceAPIView.as_view(), name='create_experience_list'),
     path('experience/<str:resume_id>/', GetExperienceListAPIView.as_view(), name='get_experience_list'),
     path('experience/<str:pk>/details/', GetExperienceDetailsAPIView.as_view(), name='get_experience_details'),
-    path('experience/create/', CreateExperienceAPIView.as_view(), name='create_experience_list'),
     path('experience/<str:pk>/update/', UpdateExperienceDetailsAPIView.as_view(), name='update_experience_details'),
 
     # Education URLs
+    path('education/create/', CreateEducationAPIView.as_view(), name='create_education_list'),
     path('education/<str:resume_id>/', GetEducationListAPIView.as_view(), name='get_education_list'),
     path('education/<str:pk>/details/', GetEducationDetailsAPIView.as_view(), name='get_education_details'),
-    path('education/create/', CreateEducationAPIView.as_view(), name='create_education_list'),
     path('education/<str:pk>/update/', UpdateEducationDetailsAPIView.as_view(), name='update_education_details'),
 
     # Skill URLs

@@ -68,9 +68,6 @@ class ContactModel(BaseModel):
         verbose_name = 'Contact'
         verbose_name_plural = 'Contacts'
 
-    # def __str__(self):
-    #     return self.resume
-
 
 class ExperienceModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='experience')

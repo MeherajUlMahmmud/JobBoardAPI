@@ -163,7 +163,7 @@ class LoginAPIView(GenericAPIView):
         tokens = serializer.validated_data['tokens']
         if user:
             user_data = UserModelSerializer.List(user).data
-            return Response({'user': user_data, 'tokens': tokens }, status=HTTP_200_OK)
+            return Response({'user': user_data, 'tokens': tokens}, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
