@@ -14,9 +14,17 @@ class JobTypeModelFilter(FilterSet):
     )
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+        )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+        )
     )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",
@@ -56,6 +64,10 @@ class JobModelFilter(FilterSet):
     )
     is_fixed_salary = BooleanFilter(
         field_name="is_fixed_salary", label="Is Fixed Salary",
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+        )
     )
     salary = CharFilter(
         field_name="salary", label="Salary",
@@ -67,9 +79,17 @@ class JobModelFilter(FilterSet):
     )
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+        )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+        )
     )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",

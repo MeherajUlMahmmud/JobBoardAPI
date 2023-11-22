@@ -14,17 +14,15 @@ from user_control.models import ApplicantModel
 
 
 class GetResumeListAPIView(CustomListAPIView):
-    queryset = ResumeModel.objects.filter(is_active=True, is_deleted=False)
     serializer_class = ResumeModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['username', 'email', 'first_name', 'last_name']
     filterset_class = ResumeModelFilter
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         if self.request.user.is_authenticated:
-            return queryset.filter(user=self.request.user)
-        return queryset
+            return ResumeModel.objects.filter(user=self.request.user)
+        return ResumeModel.objects.none()
 
 
 class GetResumeDetailsAPIView(CustomRetrieveAPIView):

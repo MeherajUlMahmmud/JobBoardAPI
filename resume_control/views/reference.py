@@ -12,35 +12,20 @@ from resume_control.serializers.reference import ReferenceModelSerializer
 
 
 class GetReferenceListAPIView(CustomListAPIView):
-    queryset = ReferenceModel.objects.all()
     serializer_class = ReferenceModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = ReferenceModelFilter
 
-    def get(self, request, *args, **kwargs):
-        resume = ResumeModel.objects.get(id=kwargs['resume_id'])
-
-        if resume:
-            if not request.user.check_object_permissions(request, resume):
-                return Response(
-                    {
-                        'detail': 'You don\'t have permission to perform this action.'
-                    },
-                    status=HTTP_403_FORBIDDEN
-                )
-
-            references = ReferenceModel.objects.filter(resume_id=resume.id)
-            return Response(
-                self.serializer_class(references, many=True).data,
-                status=HTTP_200_OK
-            )
-        else:
+    def get_queryset(self):
+        resume = ResumeModel.objects.get(id=self.kwargs['resume_id'])
+        if not self.request.user.check_object_permissions(self.request, resume):
             return Response(
                 {
-                    'detail': 'Resume not found.'
+                    'detail': 'You don\'t have permission to perform this action.'
                 },
-                status=HTTP_403_FORBIDDEN,
+                status=HTTP_403_FORBIDDEN
             )
+        return ReferenceModel.objects.filter(resume_id=resume.id)
 
 
 class GetReferenceDetailsAPIView(CustomRetrieveAPIView):

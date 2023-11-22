@@ -2,6 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from common.custom_pagination import CustomPageNumberPagination
+from user_control.custom_filters import OrganizationModelFilter
 from user_control.models import OrganizationModel
 from user_control.serializers.organization import OrganizationModelSerializer
 
@@ -11,6 +12,7 @@ class OrganizationModelViewSet(ModelViewSet):
     queryset = OrganizationModel.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
+    filterset_class = OrganizationModelFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

@@ -13,27 +13,20 @@ from resume_control.serializers.skill import SkillModelSerializer
 
 
 class GetSkillListAPIView(CustomListAPIView):
-    queryset = SkillModel.objects.all()
     serializer_class = SkillModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = SkillModelFilter
 
-    def get(self, request, *args, **kwargs):
-        resume = get_object_or_404(ResumeModel, id=kwargs['resume_id'])
-
-        if not request.user.check_object_permissions(request, resume):
+    def get_queryset(self):
+        resume = get_object_or_404(ResumeModel, id=self.kwargs['resume_id'])
+        if not self.request.user.check_object_permissions(self.request, resume):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
-
-        skills = SkillModel.objects.filter(resume_id=resume.id)
-        return Response(
-            self.serializer_class(skills, many=True).data,
-            status=HTTP_200_OK
-        )
+        return SkillModel.objects.filter(resume_id=resume.id)
 
 
 class GetSkillDetailsAPIView(CustomRetrieveAPIView):

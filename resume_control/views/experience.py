@@ -13,7 +13,6 @@ from resume_control.serializers.experience import ExperienceModelSerializer
 
 
 class GetExperienceListAPIView(CustomListAPIView):
-    queryset = ExperienceModel.objects.all()
     serializer_class = ExperienceModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = ExperienceModelFilter
@@ -22,22 +21,16 @@ class GetExperienceListAPIView(CustomListAPIView):
         'position',
     ]
 
-    def get(self, request, *args, **kwargs):
-        resume = get_object_or_404(ResumeModel, id=kwargs['resume_id'])
-
-        if not request.user.check_object_permissions(request, resume):
+    def get_queryset(self):
+        resume = get_object_or_404(ResumeModel, id=self.kwargs['resume_id'])
+        if not self.request.user.check_object_permissions(self.request, resume):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
-
-        experiences = ExperienceModel.objects.filter(resume_id=resume.id)
-        return Response(
-            self.serializer_class(experiences, many=True).data,
-            status=HTTP_200_OK
-        )
+        return ExperienceModel.objects.filter(resume_id=resume.id)
 
 
 class GetExperienceDetailsAPIView(CustomRetrieveAPIView):

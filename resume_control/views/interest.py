@@ -13,27 +13,20 @@ from resume_control.serializers.interest import InterestModelSerializer
 
 
 class GetInterestListAPIView(CustomListAPIView):
-    queryset = InterestModel.objects.all()
     serializer_class = InterestModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = InterestModelFilter
 
-    def get(self, request, *args, **kwargs):
-        resume = get_object_or_404(ResumeModel, id=kwargs['resume_id'])
-
-        if not request.user.check_object_permissions(request, resume):
+    def get_queryset(self):
+        resume = get_object_or_404(ResumeModel, id=self.kwargs['resume_id'])
+        if not self.request.user.check_object_permissions(self.request, resume):
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
                 status=HTTP_403_FORBIDDEN
             )
-
-        interests = InterestModel.objects.filter(resume_id=resume.id)
-        return Response(
-            self.serializer_class(interests, many=True).data,
-            status=HTTP_200_OK
-        )
+        return InterestModel.objects.filter(resume_id=resume.id)
 
 
 class GetInterestDetailsAPIView(CustomRetrieveAPIView):

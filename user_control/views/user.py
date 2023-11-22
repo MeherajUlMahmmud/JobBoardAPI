@@ -8,6 +8,7 @@ from common.custom_permissions import AdminOrStaffUserPermission
 from common.custom_view import (
     CustomCreateAPIView, CustomUpdateAPIView, CustomRetrieveAPIView, CustomListAPIView,
 )
+from user_control.custom_filters import UserModelFilter
 from user_control.models import UserModel, ApplicantModel, OrganizationModel
 from user_control.serializers.applicant import ApplicantModelSerializer
 from user_control.serializers.organization import OrganizationModelSerializer
@@ -18,9 +19,8 @@ class GetUserListAPIView(CustomListAPIView):
     queryset = UserModel.objects.filter(is_active=True, is_deleted=False)
     serializer_class = UserModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_class = UserModelFilter
     search_fields = ['username', 'email', 'first_name', 'last_name']
-
-    # filterset_class = UserModelFilter
 
     def get_permissions(self):
         return [AdminOrStaffUserPermission()]
