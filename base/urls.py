@@ -22,11 +22,11 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    # path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/auth/', include('auth_control.urls')),
     path('api/', include('user_control.urls')),
-    path('api/', include('job_control.urls')),
     path('api/', include('resume_control.urls')),
+    path('api/', include('job_control.urls')),
+    path('api/', include('test_control.urls')),
 ]
