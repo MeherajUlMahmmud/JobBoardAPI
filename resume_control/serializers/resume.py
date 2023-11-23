@@ -18,6 +18,8 @@ class ResumeModelSerializerMeta(ModelSerializer):
 class ResumeModelSerializer(ResumeModelSerializerMeta):
     class List(ResumeModelSerializerMeta):
         user = UserModelSerializer.Lite()
+        created_by = UserModelSerializer.Lite(read_only=True)
+        updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [
@@ -31,7 +33,9 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
                 'is_reference_visible',
                 'is_award_visible',
                 'is_certification_visible',
+                'created_by',
                 'created_at',
+                'updated_by',
                 'updated_at',
             ]
 

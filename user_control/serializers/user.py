@@ -35,6 +35,8 @@ class UserModelSerializer:
             fields = [
                 'id',
                 'email',
+                'is_applicant',
+                'is_organization',
                 'is_verified',
                 'is_staff',
                 'is_superuser',

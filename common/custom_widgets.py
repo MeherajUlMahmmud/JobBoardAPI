@@ -2,6 +2,22 @@ from django import forms
 from django_filters.widgets import SuffixedMultiWidget
 
 
+class CustomTextField(forms.TextInput):
+    def __init__(self, attrs=None):
+        default_attrs = {'class': 'form-control', 'type': 'text'}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
+
+class CustomNumberField(forms.TextInput):
+    def __init__(self, attrs=None):
+        default_attrs = {'class': 'form-control', 'type': 'number', 'min': 1}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
+
 class CustomDateRangeFilterWidget(SuffixedMultiWidget):
     template_name = 'django_filters/widgets/multiwidget.html'
     suffixes = ['0', '1']

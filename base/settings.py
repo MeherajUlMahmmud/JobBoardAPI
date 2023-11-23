@@ -50,8 +50,9 @@ CORS_ORIGIN_WHITELIST = [
 INSTALLED_APPS = [
     'auth_control.apps.AuthControlConfig',
     'user_control.apps.UserControlConfig',
-    'job_control.apps.JobControlConfig',
     'resume_control.apps.ResumeControlConfig',
+    'job_control.apps.JobControlConfig',
+    'test_control.apps.TestControlConfig',
 
     'rest_framework',
     'rest_framework.authtoken',

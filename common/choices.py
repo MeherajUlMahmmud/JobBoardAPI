@@ -39,3 +39,9 @@ class WorkExperienceTypeChoices(models.TextChoices):
     VOLUNTEER = "Volunteer", "Volunteer"
     APPRENTICESHIP = "Apprenticeship", "Apprenticeship"
     TRAINEESHIP = "Traineeship", "Traineeship"
+
+
+class QuestionTypeChoices(models.TextChoices):
+    MCQ = "MCQ", "Multiple Choice"
+    TF = "TF", "True-False"
+    FITB = "FITB", "Fill in the Blank"
