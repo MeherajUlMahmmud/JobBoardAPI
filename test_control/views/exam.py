@@ -24,32 +24,19 @@ class GetExamListAPIView(CustomListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_admin or user.is_staff or user.is_superuser:
-            queryset = ExamModel.objects.all().prefetch_related(
-                'questions',
-            ).annotate(
-                total_questions=Coalesce(
-                    Count(
-                        'questions__id', output_field=models.IntegerField(),
-                    ),  #
-                    0,  #
+        queryset = ExamModel.objects.filter(
+            created_by=user, is_active=True, is_deleted=False,
+        ).prefetch_related(
+            'questions',
+        ).annotate(
+            total_questions=Coalesce(
+                Count(
+                    'questions__id', output_field=models.IntegerField(),
                 ),
-            )
-            return queryset
-        elif user.is_organization:
-            queryset = ExamModel.objects.filter(
-                created_by=user, is_active=True, is_deleted=False,
-            ).prefetch_related(
-                'questions',
-            ).annotate(
-                total_questions=Coalesce(
-                    Count(
-                        'questions__id', output_field=models.IntegerField(),
-                    ),  #
-                    0,  #
-                ),
-            )
-            return queryset
+                0,
+            ),
+        )
+        return queryset
 
 
 class CreateExamAPIView(CustomCreateAPIView):

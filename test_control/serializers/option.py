@@ -41,11 +41,6 @@ class OptionModelSerializer:
         text = CharField(required=True)
 
         class Meta(OptionModelSerializerMeta.Meta):
-            fields = OptionModelSerializerMeta.Meta.fields
-
-        def validate(self, attrs):
-            text = attrs.get('text')
-            question = attrs.get('question')
-            if OptionModel.objects.filter(question=question, text=text).exists():
-                raise ValidationError({'text': 'Option with this text already exists.'})
-            return attrs
+            fields = OptionModelSerializerMeta.Meta.fields + [
+                'is_correct',
+            ]

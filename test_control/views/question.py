@@ -25,36 +25,19 @@ class GetQuestionListAPIView(CustomListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_admin or user.is_staff or user.is_superuser:
-            queryset = QuestionModel.objects.all().select_related(
-                'exam',
-            ).prefetch_related(
-                'options',
-            ).annotate(
-                total_options=Coalesce(
-                    Count(
-                        'options__id', output_field=models.IntegerField(),
-                    ),  #
-                    0,  #
+        queryset = QuestionModel.objects.filter(
+            created_by=user, is_active=True, is_deleted=False,
+        ).prefetch_related(
+            'options',
+        ).annotate(
+            total_options=Coalesce(
+                Count(
+                    'options__id', output_field=models.IntegerField(),
                 ),
-            )
-            return queryset
-        elif user.is_organization:
-            queryset = QuestionModel.objects.filter(
-                created_by=user, is_active=True, is_deleted=False,
-            ).select_related(
-                'exam',
-            ).prefetch_related(
-                'options',
-            ).annotate(
-                total_options=Coalesce(
-                    Count(
-                        'options__id', output_field=models.IntegerField(),
-                    ),  #
-                    0,  #
-                ),
-            )
-            return queryset
+                0,
+            ),
+        )
+        return queryset
 
 
 class CreateQuestionAPIView(CustomCreateAPIView):
@@ -99,7 +82,17 @@ class GetQuestionListByExamAPIView(CustomListAPIView):
                 },
                 status=HTTP_403_FORBIDDEN
             )
-        return QuestionModel.objects.filter(exam_id=exam.id)
+        queryset = QuestionModel.objects.filter(exam_id=exam.id).prefetch_related(
+            'options',
+        ).annotate(
+            total_options=Coalesce(
+                Count(
+                    'options__id', output_field=models.IntegerField(),
+                ),
+                0,
+            ),
+        )
+        return queryset
 
 
 class GetQuestionDetailsAPIView(CustomRetrieveAPIView):
