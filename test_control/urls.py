@@ -7,9 +7,9 @@ from test_control.views.option import (
     GetOptionListAPIView, CreateOptionAPIView, GetOptionDetailsAPIView, UpdateOptionDetailsAPIView, DeleteOptionAPIView,
 )
 from test_control.views.question import (
-    GetQuestionListAPIView, CreateQuestionAPIView, GetQuestionListByExamAPIView, GetQuestionDetailsAPIView, UpdateQuestionAPIView,
+    GetQuestionListAPIView, CreateQuestionAPIView, GetQuestionListByExamAPIView, GetQuestionDetailsAPIView,
+    UpdateQuestionAPIView,
 )
-
 
 urlpatterns = [
     # Exam URLs
