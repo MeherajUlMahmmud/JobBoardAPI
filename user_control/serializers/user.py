@@ -9,7 +9,6 @@ class UserModelSerializerMeta(ModelSerializer):
         model = UserModel
         ref_name = 'UserModelSerializer'
         fields = [
-            'id',
             'email',
             'is_applicant',
             'is_organization',
@@ -26,21 +25,14 @@ class UserModelSerializer:
 
         class Meta(UserModelSerializerMeta.Meta):
             fields = UserModelSerializerMeta.Meta.fields + [
+                'id',
                 # 'applicant',
                 # 'organization',
             ]
 
     class Lite(UserModelSerializerMeta):
         class Meta(UserModelSerializerMeta.Meta):
-            fields = [
-                'id',
-                'email',
-                'is_applicant',
-                'is_organization',
-                'is_verified',
-                'is_staff',
-                'is_superuser',
-            ]
+            fields = UserModelSerializerMeta.Meta.fields
 
     class Write(UserModelSerializerMeta):
         first_name = CharField(write_only=True, required=False, )
