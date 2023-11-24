@@ -61,6 +61,30 @@ class GetUserDetailsAPIView(CustomRetrieveAPIView):
             )
 
 
+class GetUserProfileAPIView(CustomRetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+        instance = request.user
+        serializer = UserModelSerializer.List(instance)
+        if instance.is_applicant:
+            applicant_details = ApplicantModel.objects.get(user=instance)
+            serialized_applicant_details = ApplicantModelSerializer.List(applicant_details).data
+            return Response({
+                'user_data': serializer.data,
+                'applicant_data': serialized_applicant_details if instance.is_applicant else None,
+            })
+        elif instance.is_organization:
+            organization_details = OrganizationModel.objects.get(user=instance)
+            serialized_organization_details = OrganizationModelSerializer.List(organization_details).data
+            return Response({
+                'user_data': serializer.data,
+                'organization_data': serialized_organization_details if instance.is_organization else None,
+            })
+        return Response({
+            'user_details': serializer.data,
+        })
+
+
 class CreateUserAPIView(CustomCreateAPIView):
     permission_classes = (AdminOrStaffUserPermission,)
     serializer_class = UserModelSerializer.Write
