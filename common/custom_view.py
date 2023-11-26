@@ -46,6 +46,3 @@ class CustomUpdateAPIView(UpdateAPIView):
 class CustomDestroyAPIView(DestroyAPIView):
     http_method_names = ['delete']
     permission_classes = [IsAuthenticated]
-
-    def perform_destroy(self, instance):
-        instance.destroy()

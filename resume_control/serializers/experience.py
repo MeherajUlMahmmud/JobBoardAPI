@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError
 
 from resume_control.models import *
-from resume_control.serializers.resume import ResumeModelSerializer
 from user_control.serializers.user import UserModelSerializer
 
 

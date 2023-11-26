@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
+from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from common.custom_view import (
-    CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView,
+    CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView, CustomDestroyAPIView,
 )
 from resume_control.custom_filters import ExperienceModelFilter
 from resume_control.models import ExperienceModel, ResumeModel
@@ -67,7 +67,7 @@ class CreateExperienceAPIView(CustomCreateAPIView):
         )
         return Response(
             serializer.data,
-            status=HTTP_200_OK
+            status=HTTP_201_CREATED
         )
 
 
@@ -95,4 +95,23 @@ class UpdateExperienceDetailsAPIView(CustomUpdateAPIView):
         return Response(
             serializer.data,
             status=HTTP_200_OK
+        )
+
+
+class DeleteExperienceAPIView(CustomDestroyAPIView):
+    queryset = ExperienceModel.objects.all()
+    serializer_class = ExperienceModelSerializer.List
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not request.user.check_object_permissions(request, instance):
+            return Response(
+                {
+                    'detail': 'You don\'t have permission to perform this action.'
+                },
+                status=HTTP_403_FORBIDDEN
+            )
+        instance.delete()
+        return Response(
+            status=HTTP_204_NO_CONTENT
         )
