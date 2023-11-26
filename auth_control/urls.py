@@ -9,11 +9,8 @@ urlpatterns = [
     # path('resend-verification-email/', ResendVerificationEmailAPIView.as_view()),
     path('login/', LoginAPIView.as_view()),
     path('logout/', LogoutAPIView.as_view(), name="logout"),
+    path('password-change/', PasswordChangeAPIView.as_view(), name="password_change"),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('request-reset-email/', RequestPasswordResetEmail.as_view(),
-    #      name="request-reset-email"),
-    # path('password-reset/<uidb64>/<token>',
-    #      PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
-    # path('password-reset-complete', SetNewPasswordAPIView.as_view(),
-    #      name='password-reset-complete')
+    path('request-password-reset/', RequestPasswordResetAPIView.as_view(), name="request_password_reset"),
+    path('password-reset/<uidb64>/<token>/', PasswordResetAPIView.as_view(), name='password_reset_confirm'),
 ]
