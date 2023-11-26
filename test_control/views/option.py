@@ -4,9 +4,9 @@ from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 
-from common.custom_permissions import AdminOrOrganizationPermission
+from common.custom_permissions import AdminOrOrganizationPermission, AdminOrStaffUserPermission
 from common.custom_view import (
-    CustomListAPIView, CustomCreateAPIView, CustomRetrieveAPIView, CustomUpdateAPIView,
+    CustomListAPIView, CustomCreateAPIView, CustomRetrieveAPIView, CustomUpdateAPIView, CustomDestroyAPIView,
 )
 from test_control.custom_filters import OptionModelFilter
 from test_control.models import OptionModel, QuestionModel
@@ -15,7 +15,7 @@ from test_control.serializers.option import OptionModelSerializer
 
 class GetOptionListAPIView(CustomListAPIView):
     queryset = OptionModel.objects.filter(is_active=True, is_deleted=False)
-    permission_classes = [AdminOrOrganizationPermission]
+    permission_classes = [AdminOrStaffUserPermission]
     serializer_class = OptionModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['text', ]
@@ -38,15 +38,18 @@ class GetOptionListByQuestionAPIView(CustomListAPIView):
     def get(self, request, *args, **kwargs):
         question = get_object_or_404(QuestionModel, id=self.kwargs['question_id'])
 
-        if self.request.user.check_object_permissions(self.request, question):
-            return super().get(request, *args, **kwargs)
-        elif request.user.is_applicant:  # TODO: Check if student is enrolled in the exam
-            return super().get(request, *args, **kwargs)
-        else:
+        if not self.request.user.check_object_permissions(self.request, question):
             return Response(
                 {'detail': 'You do not have permission to perform this action.'},
                 status=HTTP_403_FORBIDDEN
             )
+
+        queryset = OptionModel.objects.filter(
+            question=question, is_active=True, is_deleted=False,
+        )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
 
 
 class CreateOptionAPIView(CustomCreateAPIView):
@@ -107,12 +110,12 @@ class UpdateOptionDetailsAPIView(CustomUpdateAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class DeleteOptionAPIView(CustomUpdateAPIView):
+class DeleteOptionAPIView(CustomDestroyAPIView):
     queryset = OptionModel.objects.all()
     permission_classes = [AdminOrOrganizationPermission]
     serializer_class = OptionModelSerializer.List
 
-    def patch(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         instance = self.get_object()
 
         if not self.request.user.check_object_permissions(self.request, instance):
@@ -121,7 +124,5 @@ class DeleteOptionAPIView(CustomUpdateAPIView):
                 status=HTTP_403_FORBIDDEN,
             )
 
-        instance.is_active = False
-        instance.is_deleted = True
-        instance.save()
+        instance.delete()
         return Response({'detail': 'Option deleted successfully.'}, status=HTTP_200_OK)

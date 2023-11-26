@@ -5,6 +5,7 @@ from test_control.views.exam import (
 )
 from test_control.views.option import (
     GetOptionListAPIView, CreateOptionAPIView, GetOptionDetailsAPIView, UpdateOptionDetailsAPIView, DeleteOptionAPIView,
+    GetOptionListByQuestionAPIView,
 )
 from test_control.views.question import (
     GetQuestionListAPIView, CreateQuestionAPIView, GetQuestionListByExamAPIView, GetQuestionDetailsAPIView,
@@ -28,7 +29,7 @@ urlpatterns = [
     # Option URLs
     path('option/', GetOptionListAPIView.as_view()),
     path('option/create/', CreateOptionAPIView.as_view()),
-    path('option/<str:question_id>/', GetOptionListAPIView.as_view()),
+    path('option/<str:question_id>/', GetOptionListByQuestionAPIView.as_view()),
     path('option/<str:pk>/details/', GetOptionDetailsAPIView.as_view()),
     path('option/<str:pk>/update/', UpdateOptionDetailsAPIView.as_view()),
     path('option/<str:pk>/delete/', DeleteOptionAPIView.as_view()),

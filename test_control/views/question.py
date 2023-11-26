@@ -7,7 +7,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
 
-from common.custom_permissions import AdminOrOrganizationPermission
+from common.custom_permissions import AdminOrOrganizationPermission, AdminOrStaffUserPermission
 from common.custom_view import (
     CustomListAPIView, CustomCreateAPIView, CustomRetrieveAPIView, CustomUpdateAPIView,
 )
@@ -17,7 +17,7 @@ from test_control.serializers.question import QuestionModelSerializer
 
 
 class GetQuestionListAPIView(CustomListAPIView):
-    permission_classes = [AdminOrOrganizationPermission]
+    permission_classes = [AdminOrStaffUserPermission]
     serializer_class = QuestionModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['prompt']

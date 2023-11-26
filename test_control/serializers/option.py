@@ -30,6 +30,17 @@ class OptionModelSerializer:
                 'updated_at',
             ]
 
+    class Lite(OptionModelSerializerMeta):
+        class Meta(OptionModelSerializerMeta.Meta):
+            fields = OptionModelSerializerMeta.Meta.fields + [
+                'id',
+                'is_correct',
+                'created_by',
+                'created_at',
+                'updated_by',
+                'updated_at',
+            ]
+
     class DetailsForExamine(OptionModelSerializerMeta):
         class Meta(OptionModelSerializerMeta.Meta):
             fields = OptionModelSerializerMeta.Meta.fields + [
