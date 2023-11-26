@@ -9,6 +9,7 @@ from test_control.models import OptionModel
 class OptionModelSerializerMeta(ModelSerializer):
     class Meta:
         model = OptionModel
+        ref_name = 'OptionModelSerializer'
         fields = [
             'question',
             'text',

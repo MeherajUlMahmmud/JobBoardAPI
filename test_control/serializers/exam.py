@@ -8,6 +8,7 @@ from test_control.serializers.question import QuestionModelSerializer
 class ExamModelSerializerMeta(ModelSerializer):
     class Meta:
         model = ExamModel
+        ref_name = 'ExamModelSerializer'
         fields = [
             'title',
             'description',

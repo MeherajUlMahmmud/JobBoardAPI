@@ -10,6 +10,7 @@ from test_control.serializers.option import OptionModelSerializer
 class QuestionModelSerializerMeta(ModelSerializer):
     class Meta:
         model = QuestionModel
+        ref_name = 'QuestionModelSerializer'
         fields = [
             'exam',
             'type',

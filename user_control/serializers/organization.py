@@ -23,6 +23,10 @@ class OrganizationModelSerializer:
         class Meta(OrganizationModelSerializerMeta.Meta):
             fields = OrganizationModelSerializerMeta.Meta.fields
 
+    class DetailsForApplicant(OrganizationModelSerializerMeta):
+        class Meta(OrganizationModelSerializerMeta.Meta):
+            fields = OrganizationModelSerializerMeta.Meta.fields
+
     class Write(OrganizationModelSerializerMeta):
         class Meta(OrganizationModelSerializerMeta.Meta):
             fields = OrganizationModelSerializerMeta.Meta.fields
