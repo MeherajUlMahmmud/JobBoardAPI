@@ -22,6 +22,7 @@ class GetJobTypeListAPIView(CustomListAPIView):
 
 class GetJobTypeDetailsAPIView(CustomRetrieveAPIView):
     queryset = JobTypeModel.objects.all()
+    permission_classes = [AdminOrStaffUserPermission]
     serializer_class = JobTypeModelSerializer.List
 
     def retrieve(self, request, *args, **kwargs):
@@ -43,8 +44,8 @@ class GetJobTypeDetailsAPIView(CustomRetrieveAPIView):
 
 class CreateJobTypeAPIView(CustomCreateAPIView):
     queryset = JobTypeModel.objects.all()
-    serializer_class = JobTypeModelSerializer.Write
     permission_classes = [AdminOrStaffUserPermission]
+    serializer_class = JobTypeModelSerializer.Write
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -52,8 +53,8 @@ class CreateJobTypeAPIView(CustomCreateAPIView):
 
 class UpdateJobTypeDetailsAPIView(CustomUpdateAPIView):
     queryset = JobTypeModel.objects.all()
-    serializer_class = JobTypeModelSerializer.Write
     permission_classes = [AdminOrStaffUserPermission]
+    serializer_class = JobTypeModelSerializer.Write
 
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)

@@ -7,6 +7,7 @@ from user_control.serializers.organization import OrganizationModelSerializer
 class JobModelSerializerMeta(ModelSerializer):
     class Meta:
         model = JobModel
+        ref_name = 'JobModelSerializer'
         fields = [
             'title',
             'description',
@@ -19,7 +20,7 @@ class JobModelSerializer(JobModelSerializerMeta):
 
         class Meta(JobModelSerializerMeta.Meta):
             fields = JobModelSerializerMeta.Meta.fields + [
-                'uuid',
+                'id',
                 'organization',
                 'department',
                 'location',
@@ -34,12 +35,25 @@ class JobModelSerializer(JobModelSerializerMeta):
                 'updated_at',
             ]
 
-    class Detail(JobModelSerializerMeta):
+    class ListForOthers(JobModelSerializerMeta):
         organization = OrganizationModelSerializer.List()
 
         class Meta(JobModelSerializerMeta.Meta):
             fields = JobModelSerializerMeta.Meta.fields + [
-                'uuid',
+                'id',
+                'organization',
+                'department',
+                'location',
+                'job_types',
+                'created_at',
+            ]
+
+    class Details(JobModelSerializerMeta):
+        organization = OrganizationModelSerializer.List()
+
+        class Meta(JobModelSerializerMeta.Meta):
+            fields = JobModelSerializerMeta.Meta.fields + [
+                'id',
                 'organization',
                 'department',
                 'location',
@@ -52,6 +66,22 @@ class JobModelSerializer(JobModelSerializerMeta):
                 'salary_max',
                 'created_at',
                 'updated_at',
+            ]
+
+    class DetailsForOthers(JobModelSerializerMeta):
+        organization = OrganizationModelSerializer.DetailsForApplicant()
+
+        class Meta(JobModelSerializerMeta.Meta):
+            fields = JobModelSerializerMeta.Meta.fields + [
+                'id',
+                'organization',
+                'department',
+                'location',
+                'job_types',
+                'is_fixed_salary',
+                'salary_currency',
+                'salary_period',
+                'created_at',
             ]
 
     class Write(JobModelSerializerMeta):
