@@ -15,6 +15,7 @@ from resume_control.views.education import (
 )
 from resume_control.views.experience import (
     GetExperienceListAPIView, GetExperienceDetailsAPIView, CreateExperienceAPIView, UpdateExperienceDetailsAPIView,
+    DeleteExperienceAPIView,
 )
 from resume_control.views.interest import (
     CreateInterestAPIView, GetInterestListAPIView, GetInterestDetailsAPIView, UpdateInterestDetailsAPIView,
@@ -54,6 +55,7 @@ urlpatterns = [
     path('experience/<str:resume_id>/', GetExperienceListAPIView.as_view(), name='get_experience_list'),
     path('experience/<str:pk>/details/', GetExperienceDetailsAPIView.as_view(), name='get_experience_details'),
     path('experience/<str:pk>/update/', UpdateExperienceDetailsAPIView.as_view(), name='update_experience_details'),
+    path('experience/<str:pk>/delete/', DeleteExperienceAPIView.as_view(), name='delete_experience_details'),
 
     # Education URLs
     path('education/create/', CreateEducationAPIView.as_view(), name='create_education_list'),
