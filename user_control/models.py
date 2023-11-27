@@ -133,7 +133,6 @@ class ApplicantModel(BaseModel):
     last_name = models.CharField(max_length=255)
     profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
-    resume = models.FileField(upload_to='resumes', null=True, blank=True)
 
     class Meta:
         db_table = 'applicants'

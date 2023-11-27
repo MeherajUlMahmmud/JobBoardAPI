@@ -138,9 +138,9 @@ class ResendVerificationEmailAPIView(APIView):
             return Response({'detail': 'Email already verified'}, status=HTTP_400_BAD_REQUEST)
 
         if user.is_applicant:
-            applicant = ApplicantModel.objects.get(user=user)
+            applicant = ApplicantModel.objects.get(user=user, created_by=user)
         elif user.is_organization:
-            organization = OrganizationModel.objects.get(user=user)
+            organization = OrganizationModel.objects.get(user=user, created_by=user)
 
         name = applicant.first_name + " " + applicant.last_name if user.is_applicant else organization.name
         token = RefreshToken.for_user(user).access_token

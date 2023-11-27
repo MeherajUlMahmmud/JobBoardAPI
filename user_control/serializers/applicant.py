@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from user_control.models import ApplicantModel
+from user_control.serializers.user import UserModelSerializer
 
 
 class ApplicantModelSerializerMeta(ModelSerializer):
@@ -8,25 +9,27 @@ class ApplicantModelSerializerMeta(ModelSerializer):
         model = ApplicantModel
         ref_name = 'ApplicantModelSerializer'
         fields = [
+            'id',
             'first_name',
             'last_name',
-            'profile_picture',
             'phone_number',
-            'resume',
         ]
 
 
 class ApplicantModelSerializer:
     class List(ApplicantModelSerializerMeta):
+        user = UserModelSerializer.Lite()
+
         class Meta(ApplicantModelSerializerMeta.Meta):
             fields = ApplicantModelSerializerMeta.Meta.fields + [
-                'id',
+                'profile_picture',
+                'user',
             ]
 
     class Lite(ApplicantModelSerializerMeta):
         class Meta(ApplicantModelSerializerMeta.Meta):
             fields = ApplicantModelSerializerMeta.Meta.fields + [
-                'id',
+                'profile_picture',
             ]
 
     class Write(ApplicantModelSerializerMeta):

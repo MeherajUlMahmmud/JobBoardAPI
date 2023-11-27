@@ -3,6 +3,7 @@ from django_filters.rest_framework import (
     FilterSet, BooleanFilter, CharFilter, ChoiceFilter, DateFromToRangeFilter,
 )
 
+from common.choices import YesNoChoices
 from common.custom_widgets import CustomDateRangeFilterWidget
 from job_control.models import JobTypeModel, JobModel
 
@@ -16,14 +17,14 @@ class JobTypeModelFilter(FilterSet):
         field_name="is_active", label="Is Active",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     created_at = DateFromToRangeFilter(
@@ -66,7 +67,7 @@ class JobModelFilter(FilterSet):
         field_name="is_fixed_salary", label="Is Fixed Salary",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     salary = CharFilter(
@@ -81,14 +82,14 @@ class JobModelFilter(FilterSet):
         field_name="is_active", label="Is Active",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     created_at = DateFromToRangeFilter(

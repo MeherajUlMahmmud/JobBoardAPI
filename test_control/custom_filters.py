@@ -1,7 +1,9 @@
+from django.forms import Select
 from django_filters import CharFilter
 from django_filters.rest_framework import FilterSet, DateFromToRangeFilter, BooleanFilter
 from django_filters.widgets import BooleanWidget
 
+from common.choices import YesNoChoices
 from common.custom_widgets import CustomTextField, CustomDateRangeFilterWidget, CustomNumberField
 from test_control.models import ExamModel, QuestionModel, OptionModel
 
@@ -9,11 +11,17 @@ from test_control.models import ExamModel, QuestionModel, OptionModel
 class ExamModelFilter(FilterSet):
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",
@@ -40,7 +48,10 @@ class QuestionModelFilter(FilterSet):
     )
     is_marked = BooleanFilter(
         field_name="is_marked", label="Is Marked",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     marks = CharFilter(
         field_name="marks", label="Marks",
@@ -48,11 +59,17 @@ class QuestionModelFilter(FilterSet):
     )
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",
@@ -79,15 +96,24 @@ class OptionModelFilter(FilterSet):
     )
     is_correct = BooleanFilter(
         field_name="is_correct", label="Is Correct",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
-        widget=BooleanWidget(attrs={'class': 'form-check-input'})
+        widget=Select(
+            attrs={'class': 'form-control'},
+            choices=[YesNoChoices],
+        )
     )
     created_at = DateFromToRangeFilter(
         field_name="created_at", label="Created At",

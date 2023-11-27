@@ -3,6 +3,7 @@ from django_filters.rest_framework import (
     FilterSet, BooleanFilter, CharFilter, DateFromToRangeFilter,
 )
 
+from common.choices import YesNoChoices
 from common.custom_widgets import CustomDateRangeFilterWidget
 from user_control.models import UserModel, ApplicantModel, OrganizationModel
 
@@ -12,56 +13,56 @@ class UserModelFilter(FilterSet):
         field_name="is_verified", label="Is Verified",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_applicant = BooleanFilter(
         field_name="is_applicant", label="Is Applicant",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_organization = BooleanFilter(
         field_name="is_organization", label="Is Organization",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_staff = BooleanFilter(
         field_name="is_staff", label="Is Staff",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_admin = BooleanFilter(
         field_name="is_admin", label="Is Admin",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_superuser = BooleanFilter(
         field_name="is_superuser", label="Is Superuser",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_active = BooleanFilter(
         field_name="is_active", label="Is Active",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     created_at = DateFromToRangeFilter(
@@ -93,14 +94,14 @@ class ApplicantModelFilter(FilterSet):
         field_name="is_active", label="Is Active",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     created_at = DateFromToRangeFilter(
@@ -127,14 +128,14 @@ class OrganizationModelFilter(FilterSet):
         field_name="is_active", label="Is Active",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     is_deleted = BooleanFilter(
         field_name="is_deleted", label="Is Deleted",
         widget=Select(
             attrs={'class': 'form-control'},
-            choices=[(None, '---------'), (True, 'Yes'), (False, 'No')],
+            choices=[YesNoChoices],
         )
     )
     created_at = DateFromToRangeFilter(

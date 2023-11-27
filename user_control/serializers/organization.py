@@ -10,8 +10,6 @@ class OrganizationModelSerializerMeta(ModelSerializer):
         fields = [
             'id',
             'name',
-            'company_logo',
-            'cover_picture',
             'phone_number',
             'website',
             'description',
@@ -21,11 +19,17 @@ class OrganizationModelSerializerMeta(ModelSerializer):
 class OrganizationModelSerializer:
     class List(OrganizationModelSerializerMeta):
         class Meta(OrganizationModelSerializerMeta.Meta):
-            fields = OrganizationModelSerializerMeta.Meta.fields
+            fields = OrganizationModelSerializerMeta.Meta.fields + [
+                'company_logo',
+                'cover_picture',
+            ]
 
     class DetailsForApplicant(OrganizationModelSerializerMeta):
         class Meta(OrganizationModelSerializerMeta.Meta):
-            fields = OrganizationModelSerializerMeta.Meta.fields
+            fields = OrganizationModelSerializerMeta.Meta.fields + [
+                'company_logo',
+                'cover_picture',
+            ]
 
     class Write(OrganizationModelSerializerMeta):
         class Meta(OrganizationModelSerializerMeta.Meta):

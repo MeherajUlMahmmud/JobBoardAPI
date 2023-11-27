@@ -32,7 +32,9 @@ class UserModelSerializer:
 
     class Lite(UserModelSerializerMeta):
         class Meta(UserModelSerializerMeta.Meta):
-            fields = UserModelSerializerMeta.Meta.fields
+            fields = UserModelSerializerMeta.Meta.fields + [
+                'id',
+            ]
 
     class Write(UserModelSerializerMeta):
         first_name = CharField(write_only=True, required=False, )

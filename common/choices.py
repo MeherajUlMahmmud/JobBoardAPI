@@ -1,5 +1,11 @@
 from django.db import models
 
+YesNoChoices = [
+    (None, '---------'),
+    (True, 'Yes'),
+    (False, 'No'),
+]
+
 
 class SalaryPeriodChoices(models.TextChoices):
     HOURLY = "hourly", "Hourly"

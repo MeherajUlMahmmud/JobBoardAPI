@@ -35,7 +35,8 @@
 - [ ] Verify email.
 - [x] Change password
 - [ ] Change email.
-- [ ] Update profile. (Applicant, Organization)
+- [x] Update profile. (Applicant, Organization)
+- [ ] Save images to AWS S3.
 
 ### Resume Builder
 - [x] Create, update, and delete Resume.
@@ -56,9 +57,9 @@
 
 ### Job 
 - [ ] Create, update, and delete Job. (Organization)
-- [ ] View Job details. (Applicant)
-- [ ] View all Jobs. (Applicant)
-- [ ] View all Jobs. (Organization)
+- [x] View Job details. (Applicant)
+- [x] View all Jobs. (Applicant)
+- [x] View all Jobs. (Organization)
 - [ ] View all Jobs. (Public)
 - [ ] Search Jobs by title, location, and company. (Public)
 - [ ] Apply for a Job. (Applicant)

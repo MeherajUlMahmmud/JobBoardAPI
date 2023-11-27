@@ -2,7 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
+from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK, HTTP_201_CREATED
 
 from common.custom_permissions import AdminOrStaffUserPermission
 from common.custom_view import (
@@ -17,13 +17,11 @@ from user_control.serializers.user import UserModelSerializer
 
 class GetUserListAPIView(CustomListAPIView):
     queryset = UserModel.objects.filter(is_active=True, is_deleted=False)
+    permission_classes = [AdminOrStaffUserPermission]
     serializer_class = UserModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = UserModelFilter
     search_fields = ['username', 'email', 'first_name', 'last_name']
-
-    def get_permissions(self):
-        return [AdminOrStaffUserPermission()]
 
 
 class GetUserDetailsAPIView(CustomRetrieveAPIView):
@@ -33,26 +31,7 @@ class GetUserDetailsAPIView(CustomRetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         requested_user = request.user
-        if requested_user.is_staff or requested_user.is_superuser or requested_user.id == instance.id:
-            serializer = UserModelSerializer.List(instance)
-            if instance.is_applicant:
-                applicant_details = ApplicantModel.objects.get(user=instance)
-                serialized_applicant_details = ApplicantModelSerializer.List(applicant_details).data
-                return Response({
-                    'user_data': serializer.data,
-                    'applicant_data': serialized_applicant_details if instance.is_applicant else None,
-                })
-            elif instance.is_organization:
-                organization_details = OrganizationModel.objects.get(user=instance)
-                serialized_organization_details = OrganizationModelSerializer.List(organization_details).data
-                return Response({
-                    'user_data': serializer.data,
-                    'organization_data': serialized_organization_details if instance.is_organization else None,
-                })
-            return Response({
-                'user_details': serializer.data,
-            })
-        else:
+        if not request.user.check_object_permissions(request, instance) or not requested_user.id == instance.id:
             return Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
@@ -60,11 +39,6 @@ class GetUserDetailsAPIView(CustomRetrieveAPIView):
                 status=HTTP_403_FORBIDDEN
             )
 
-
-class GetUserProfileAPIView(CustomRetrieveAPIView):
-
-    def get(self, request, *args, **kwargs):
-        instance = request.user
         serializer = UserModelSerializer.List(instance)
         if instance.is_applicant:
             applicant_details = ApplicantModel.objects.get(user=instance)
@@ -82,7 +56,38 @@ class GetUserProfileAPIView(CustomRetrieveAPIView):
             })
         return Response({
             'user_details': serializer.data,
-        })
+        }, status=HTTP_200_OK)
+
+
+class GetUserProfileAPIView(CustomRetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+        instance = request.user
+        serializer = UserModelSerializer.List(instance)
+        if not request.user.check_object_permissions(request, instance):
+            return Response(
+                {
+                    'detail': 'You don\'t have permission to perform this action.'
+                },
+                status=HTTP_403_FORBIDDEN
+            )
+        if instance.is_applicant:
+            applicant_details = ApplicantModel.objects.get(user=instance)
+            serialized_applicant_details = ApplicantModelSerializer.List(applicant_details).data
+            return Response({
+                'user_data': serializer.data,
+                'applicant_data': serialized_applicant_details if instance.is_applicant else None,
+            }, status=HTTP_200_OK)
+        elif instance.is_organization:
+            organization_details = OrganizationModel.objects.get(user=instance)
+            serialized_organization_details = OrganizationModelSerializer.List(organization_details).data
+            return Response({
+                'user_data': serializer.data,
+                'organization_data': serialized_organization_details if instance.is_organization else None,
+            }, status=HTTP_200_OK)
+        return Response({
+            'user_details': serializer.data,
+        }, status=HTTP_200_OK)
 
 
 class CreateUserAPIView(CustomCreateAPIView):
@@ -129,20 +134,29 @@ class CreateUserAPIView(CustomCreateAPIView):
             is_staff=is_staff,
             is_admin=is_admin,
             is_superuser=is_admin,
+            created_by=request.user,
         )
         user.set_password(password)
         user.save()
 
         if is_applicant:
-            ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
+            ApplicantModel.objects.create(
+                user=user,
+                first_name=first_name,
+                last_name=last_name,
+                created_by=request.user,
+            )
         elif is_organization:
-            OrganizationModel.objects.create(user=user, name=name)
+            OrganizationModel.objects.create(
+                user=user,
+                name=name,
+                created_by=request.user,
+            )
 
-        return Response(status=HTTP_200_OK)
+        return Response(status=HTTP_201_CREATED)
 
 
 class UpdateUserDetailsAPIView(CustomUpdateAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = UserModelSerializer.Write
     queryset = UserModel.objects.filter(is_active=True, is_deleted=False)
 
@@ -153,7 +167,7 @@ class UpdateUserDetailsAPIView(CustomUpdateAPIView):
             serializer = self.serializer_class(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=HTTP_200_OK)
         else:
             return Response(
                 {
