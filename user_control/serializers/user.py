@@ -20,14 +20,12 @@ class UserModelSerializerMeta(ModelSerializer):
 
 class UserModelSerializer:
     class List(UserModelSerializerMeta):
-        # applicant = ApplicantModelSerializer.List()
-        # organization = OrganizationModelSerializer.List()
 
         class Meta(UserModelSerializerMeta.Meta):
             fields = UserModelSerializerMeta.Meta.fields + [
                 'id',
-                # 'applicant',
-                # 'organization',
+                'applicant',
+                'organization',
             ]
 
     class Lite(UserModelSerializerMeta):

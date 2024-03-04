@@ -18,6 +18,13 @@ class ApplicantModelSerializerMeta(ModelSerializer):
 
 class ApplicantModelSerializer:
     class List(ApplicantModelSerializerMeta):
+        class Meta(ApplicantModelSerializerMeta.Meta):
+            fields = ApplicantModelSerializerMeta.Meta.fields + [
+                'profile_picture',
+                'user',
+            ]
+
+    class Details(ApplicantModelSerializerMeta):
         user = UserModelSerializer.Lite()
 
         class Meta(ApplicantModelSerializerMeta.Meta):
