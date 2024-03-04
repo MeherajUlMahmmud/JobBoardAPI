@@ -10,7 +10,8 @@ class GetPersonalDetailsAPIView(CustomRetrieveAPIView):
     serializer_class = PersonalModelSerializer.List
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        resume_id = self.kwargs.get('resume_id')
+        instance = PersonalModel.objects.filter(resume_id=resume_id).first()
         request_user = request.user
         if not request_user.check_object_permissions(request, instance):
             return Response({'detail': 'You do not have permission to perform this action.'}, status=403)

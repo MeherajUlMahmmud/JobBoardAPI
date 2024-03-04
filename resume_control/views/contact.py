@@ -10,7 +10,8 @@ class GetContactDetailsAPIView(CustomRetrieveAPIView):
     serializer_class = ContactModelSerializer.List
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        resume_id = self.kwargs.get('resume_id')
+        instance = ContactModel.objects.filter(resume_id=resume_id).first()
         if not request.user.check_object_permissions(request, instance):
             return Response(status=403)
 

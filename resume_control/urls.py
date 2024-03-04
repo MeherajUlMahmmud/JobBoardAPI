@@ -30,7 +30,7 @@ from resume_control.views.reference import (
     CreateReferenceAPIView, GetReferenceListAPIView, GetReferenceDetailsAPIView, UpdateReferenceDetailsAPIView,
 )
 from resume_control.views.resume import (
-    GetResumeListAPIView, CreateResumeAPIView, GetResumeDetailsAPIView,
+    GetResumeListAPIView, CreateResumeAPIView, GetResumeDetailsAPIView, DestroyResumeAPIView, UpdateResumeAPIView,
 )
 from resume_control.views.skill import (
     CreateSkillAPIView, GetSkillListAPIView, GetSkillDetailsAPIView, UpdateSkillDetailsAPIView,
@@ -41,13 +41,15 @@ urlpatterns = [
     path('resume/list/', GetResumeListAPIView.as_view()),
     path('resume/create/', CreateResumeAPIView.as_view(), name='create_resume'),
     path('resume/<str:pk>/details/', GetResumeDetailsAPIView.as_view(), name='get_resume_details'),
+    path('resume/<str:pk>/update/', UpdateResumeAPIView.as_view(), name='update_resume'),
+    path('resume/<str:pk>/destroy/', DestroyResumeAPIView.as_view(), name='destroy_resume'),
 
     # Personal URLs
-    path('personal/<str:pk>/details/', GetPersonalDetailsAPIView.as_view(), name='get_personal_details'),
+    path('personal/<str:resume_id>/details/', GetPersonalDetailsAPIView.as_view(), name='get_personal_details'),
     path('personal/<str:pk>/update/', UpdatePersonalDetailsAPIView.as_view(), name='update_personal_details'),
 
     # Contact URLs
-    path('contact/<str:pk>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),
+    path('contact/<str:resume_id>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),
     path('contact/<str:pk>/update/', UpdateContactDetailsAPIView.as_view(), name='update_contact_details'),
 
     # Experience URLs

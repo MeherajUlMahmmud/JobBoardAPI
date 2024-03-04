@@ -29,6 +29,7 @@ class PersonalModelSerializer:
             fields = PersonalModelSerializerMeta.Meta.fields + [
                 'id',
                 'resume',
+                'resume_picture',
                 'created_by',
                 'created_at',
                 'updated_by',

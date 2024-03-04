@@ -32,7 +32,6 @@ class ResumeModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
     fieldsets = (
         (None, {'fields': (
             'user', 'name',
-            'extra_fields',
         )}),
         ('Permissions', {'fields': (
             'is_education_visible', 'is_experience_visible', 'is_skill_visible', 'is_language_visible',

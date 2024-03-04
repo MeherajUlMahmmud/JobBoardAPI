@@ -26,7 +26,10 @@ urlpatterns = [
     # Organization URLs
     path('organization/', GetOrganizationListAPIView.as_view(), name='get_organization_list'),
     path('organization/<str:pk>/details/', GetOrganizationDetailsAPIView.as_view(), name='get_organization_details'),
-    path('organization/<str:pk>/update/', UpdateOrganizationDetailsAPIView.as_view(),
-         name='update_organization_details'),
+    path(
+        'organization/<str:pk>/update/',
+        UpdateOrganizationDetailsAPIView.as_view(),
+        name='update_organization_details',
+    ),
 
 ]
