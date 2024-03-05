@@ -33,4 +33,5 @@ class UpdateContactDetailsAPIView(CustomUpdateAPIView):
         serializer.save(
             updated_by=request.user
         )
-        return Response(serializer.data)
+        serialized_data = ContactModelSerializer.List(instance).data
+        return Response(serialized_data)
