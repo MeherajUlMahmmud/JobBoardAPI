@@ -24,6 +24,8 @@ class LanguageModelSerializer:
         class Meta(LanguageModelSerializerMeta.Meta):
             fields = LanguageModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

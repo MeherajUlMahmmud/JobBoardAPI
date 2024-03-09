@@ -24,6 +24,8 @@ class AwardModelSerializer:
         class Meta(AwardModelSerializerMeta.Meta):
             fields = AwardModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

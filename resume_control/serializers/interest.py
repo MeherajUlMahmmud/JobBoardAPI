@@ -23,6 +23,8 @@ class InterestModelSerializer:
         class Meta(InterestModelSerializerMeta.Meta):
             fields = InterestModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

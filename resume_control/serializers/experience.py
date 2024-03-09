@@ -30,6 +30,8 @@ class ExperienceModelSerializer:
         class Meta(ExperienceModelSerializerMeta.Meta):
             fields = ExperienceModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

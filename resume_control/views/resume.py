@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
 from rest_framework.response import Response
@@ -7,8 +8,6 @@ from common.custom_view import (
 )
 from resume_control.custom_filters import ResumeModelFilter
 from resume_control.models import ResumeModel, PersonalModel, ContactModel
-from resume_control.serializers.contact import ContactModelSerializer
-from resume_control.serializers.personal import PersonalModelSerializer
 from resume_control.serializers.resume import ResumeModelSerializer
 from user_control.models import ApplicantModel
 
@@ -88,9 +87,11 @@ class UpdateResumeAPIView(CustomUpdateAPIView):
         resume_data = ResumeModelSerializer.List(instance).data
         return Response(resume_data, status=status.HTTP_200_OK)
 
+
 class DestroyResumeAPIView(CustomDestroyAPIView):
     queryset = ResumeModel.objects.all()
 
+    @transaction.atomic
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
         if not request.user.check_object_permissions(request, instance):
@@ -98,18 +99,40 @@ class DestroyResumeAPIView(CustomDestroyAPIView):
                 'detail': 'You do not have permission to perform this action.',
             }, status=status.HTTP_403_FORBIDDEN)
 
-        personal = instance.personal
-        print(personal)
-        contact = instance.contact
-        print(contact)
-        educations = instance.education.all()
-        print("Educations length: ", len(educations))
-        experiences = instance.experience.all()
-        print("Experiences length: ", len(experiences))
-        # skills = instance.skill_set.all()
-        # languages = instance.language_set.all()
-        # interests = instance.interest_set.all()
-        # awards = instance.award_set.all()
-        # certifications = instance.certification_set.all()
-        # references = instance.reference_set.all()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            personal = instance.personal
+            contact = instance.contact
+            educations = instance.education.all()
+            experiences = instance.experience.all()
+            skills = instance.skill.all()
+            languages = instance.language.all()
+            interests = instance.interest.all()
+            awards = instance.award.all()
+            # certifications = instance.certification_set.all()
+            # references = instance.reference_set.all()
+
+            personal.delete()
+            contact.delete()
+            for education in educations:
+                education.delete()
+            for experience in experiences:
+                experience.delete()
+            for skill in skills:
+                skill.delete()
+            for language in languages:
+                language.delete()
+            for interest in interests:
+                interest.delete()
+            for award in awards:
+                award.delete()
+            # for certification in certifications:
+            #     certification.delete()
+            # for reference in references:
+            #     reference.delete()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response({
+                'detail': 'Failed to delete resume.',
+            }, status=status.HTTP_400_BAD_REQUEST)

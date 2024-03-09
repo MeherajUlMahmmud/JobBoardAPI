@@ -30,6 +30,8 @@ class EducationModelSerializer:
         class Meta(EducationModelSerializerMeta.Meta):
             fields = EducationModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

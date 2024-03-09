@@ -24,6 +24,8 @@ class SkillModelSerializer:
         class Meta(SkillModelSerializerMeta.Meta):
             fields = SkillModelSerializerMeta.Meta.fields + [
                 'id',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',

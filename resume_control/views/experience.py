@@ -98,7 +98,7 @@ class UpdateExperienceDetailsAPIView(CustomUpdateAPIView):
         )
 
 
-class DeleteExperienceAPIView(CustomDestroyAPIView):
+class DestroyExperienceAPIView(CustomDestroyAPIView):
     queryset = ExperienceModel.objects.all()
     serializer_class = ExperienceModelSerializer.List
 

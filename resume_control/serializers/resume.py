@@ -33,6 +33,8 @@ class ResumeModelSerializer(ResumeModelSerializerMeta):
                 'is_reference_visible',
                 'is_award_visible',
                 'is_certification_visible',
+                'is_active',
+                'is_deleted',
                 'created_by',
                 'created_at',
                 'updated_by',
