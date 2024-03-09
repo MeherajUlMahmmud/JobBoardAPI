@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
 from resume_control.models import ContactModel
-from user_control.serializers.user import UserModelSerializer
 
 
 class ContactModelSerializerMeta(ModelSerializer):
@@ -22,9 +21,6 @@ class ContactModelSerializerMeta(ModelSerializer):
 
 class ContactModelSerializer:
     class List(ContactModelSerializerMeta):
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
-
         class Meta(ContactModelSerializerMeta.Meta):
             fields = ContactModelSerializerMeta.Meta.fields + [
                 'id',

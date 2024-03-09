@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError
 
 from resume_control.models import *
-from user_control.serializers.user import UserModelSerializer
 
 
 class ReferenceModelSerializerMeta(ModelSerializer):
@@ -22,9 +21,6 @@ class ReferenceModelSerializerMeta(ModelSerializer):
 
 class ReferenceModelSerializer:
     class List(ReferenceModelSerializerMeta):
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
-
         class Meta(ReferenceModelSerializerMeta.Meta):
             fields = ReferenceModelSerializerMeta.Meta.fields + [
                 'id',

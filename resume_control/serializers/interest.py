@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError
 
 from resume_control.models import *
-from user_control.serializers.user import UserModelSerializer
 
 
 class InterestModelSerializerMeta(ModelSerializer):
@@ -17,9 +16,6 @@ class InterestModelSerializerMeta(ModelSerializer):
 
 class InterestModelSerializer:
     class List(InterestModelSerializerMeta):
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
-
         class Meta(InterestModelSerializerMeta.Meta):
             fields = InterestModelSerializerMeta.Meta.fields + [
                 'id',

@@ -52,8 +52,6 @@
 - [x] Create, update and delete References.
 - [x] Create, update and delete Languages.
 - [x] Create, update and delete Interests.
-- [ ] Preview Resume.
-- [ ] Export Resume as PDF.
 
 ### Job 
 - [ ] Create, update, and delete Job. (Organization)

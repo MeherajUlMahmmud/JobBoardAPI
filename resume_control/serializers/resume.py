@@ -1,8 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
 from resume_control.models import ResumeModel
-from resume_control.serializers.contact import ContactModelSerializer
-from resume_control.serializers.personal import PersonalModelSerializer
 from user_control.serializers.user import UserModelSerializer
 
 
@@ -18,8 +16,6 @@ class ResumeModelSerializerMeta(ModelSerializer):
 class ResumeModelSerializer(ResumeModelSerializerMeta):
     class List(ResumeModelSerializerMeta):
         user = UserModelSerializer.Lite()
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [

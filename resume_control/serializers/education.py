@@ -1,7 +1,6 @@
-from rest_framework.serializers import ModelSerializer, CharField, ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 
 from resume_control.models import *
-from user_control.serializers.user import UserModelSerializer
 
 
 class EducationModelSerializerMeta(ModelSerializer):
@@ -24,9 +23,6 @@ class EducationModelSerializerMeta(ModelSerializer):
 
 class EducationModelSerializer:
     class List(EducationModelSerializerMeta):
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
-
         class Meta(EducationModelSerializerMeta.Meta):
             fields = EducationModelSerializerMeta.Meta.fields + [
                 'id',
@@ -39,7 +35,6 @@ class EducationModelSerializer:
             ]
 
     class Write(EducationModelSerializerMeta):
-
         class Meta(EducationModelSerializerMeta.Meta):
             fields = EducationModelSerializerMeta.Meta.fields
 

@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
 from resume_control.models import PersonalModel
-from user_control.serializers.user import UserModelSerializer
 
 
 class PersonalModelSerializerMeta(ModelSerializer):
@@ -22,9 +21,6 @@ class PersonalModelSerializerMeta(ModelSerializer):
 
 class PersonalModelSerializer:
     class List(PersonalModelSerializerMeta):
-        # created_by = UserModelSerializer.Lite(read_only=True)
-        # updated_by = UserModelSerializer.Lite(read_only=True)
-
         class Meta(PersonalModelSerializerMeta.Meta):
             fields = PersonalModelSerializerMeta.Meta.fields + [
                 'id',
