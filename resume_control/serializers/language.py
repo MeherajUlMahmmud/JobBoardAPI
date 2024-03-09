@@ -18,8 +18,8 @@ class LanguageModelSerializerMeta(ModelSerializer):
 
 class LanguageModelSerializer:
     class List(LanguageModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(LanguageModelSerializerMeta.Meta):
             fields = LanguageModelSerializerMeta.Meta.fields + [

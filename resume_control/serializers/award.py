@@ -18,8 +18,8 @@ class AwardModelSerializerMeta(ModelSerializer):
 
 class AwardModelSerializer:
     class List(AwardModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(AwardModelSerializerMeta.Meta):
             fields = AwardModelSerializerMeta.Meta.fields + [

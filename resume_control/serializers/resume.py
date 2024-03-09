@@ -18,8 +18,8 @@ class ResumeModelSerializerMeta(ModelSerializer):
 class ResumeModelSerializer(ResumeModelSerializerMeta):
     class List(ResumeModelSerializerMeta):
         user = UserModelSerializer.Lite()
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(ResumeModelSerializerMeta.Meta):
             fields = ResumeModelSerializerMeta.Meta.fields + [

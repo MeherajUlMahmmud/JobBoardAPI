@@ -24,8 +24,8 @@ class EducationModelSerializerMeta(ModelSerializer):
 
 class EducationModelSerializer:
     class List(EducationModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(EducationModelSerializerMeta.Meta):
             fields = EducationModelSerializerMeta.Meta.fields + [

@@ -22,8 +22,8 @@ class PersonalModelSerializerMeta(ModelSerializer):
 
 class PersonalModelSerializer:
     class List(PersonalModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(PersonalModelSerializerMeta.Meta):
             fields = PersonalModelSerializerMeta.Meta.fields + [

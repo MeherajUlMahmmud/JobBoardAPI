@@ -24,8 +24,8 @@ class ExperienceModelSerializerMeta(ModelSerializer):
 
 class ExperienceModelSerializer:
     class List(ExperienceModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(ExperienceModelSerializerMeta.Meta):
             fields = ExperienceModelSerializerMeta.Meta.fields + [

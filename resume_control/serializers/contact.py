@@ -22,8 +22,8 @@ class ContactModelSerializerMeta(ModelSerializer):
 
 class ContactModelSerializer:
     class List(ContactModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(ContactModelSerializerMeta.Meta):
             fields = ContactModelSerializerMeta.Meta.fields + [

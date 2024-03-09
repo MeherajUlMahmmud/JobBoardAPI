@@ -18,8 +18,8 @@ class SkillModelSerializerMeta(ModelSerializer):
 
 class SkillModelSerializer:
     class List(SkillModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(SkillModelSerializerMeta.Meta):
             fields = SkillModelSerializerMeta.Meta.fields + [

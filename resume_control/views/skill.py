@@ -26,7 +26,7 @@ class GetSkillListAPIView(CustomListAPIView):
                 },
                 status=HTTP_403_FORBIDDEN
             )
-        return SkillModel.objects.filter(resume_id=resume.id)
+        return SkillModel.objects.filter(resume_id=resume.id, is_active=True)
 
 
 class GetSkillDetailsAPIView(CustomRetrieveAPIView):

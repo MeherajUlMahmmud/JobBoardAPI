@@ -17,8 +17,8 @@ class InterestModelSerializerMeta(ModelSerializer):
 
 class InterestModelSerializer:
     class List(InterestModelSerializerMeta):
-        created_by = UserModelSerializer.Lite(read_only=True)
-        updated_by = UserModelSerializer.Lite(read_only=True)
+        # created_by = UserModelSerializer.Lite(read_only=True)
+        # updated_by = UserModelSerializer.Lite(read_only=True)
 
         class Meta(InterestModelSerializerMeta.Meta):
             fields = InterestModelSerializerMeta.Meta.fields + [
