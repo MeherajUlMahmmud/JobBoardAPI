@@ -8,6 +8,7 @@ class CertificationModelSerializerMeta(ModelSerializer):
         model = CertificationModel
         ref_name = 'CertificationModelSerializer'
         fields = [
+            'resume',
             'title',
             'description',
             'link',

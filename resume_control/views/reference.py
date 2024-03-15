@@ -1,10 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
+from rest_framework import filters, response, status
 
 from common.custom_view import (
-    CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView,
+    CustomListAPIView, CustomRetrieveAPIView, CustomCreateAPIView, CustomUpdateAPIView, CustomDestroyAPIView,
 )
 from resume_control.custom_filters import ReferenceModelFilter
 from resume_control.models import ReferenceModel, ResumeModel
@@ -19,11 +17,11 @@ class GetReferenceListAPIView(CustomListAPIView):
     def get_queryset(self):
         resume = ResumeModel.objects.get(id=self.kwargs['resume_id'])
         if not self.request.user.check_object_permissions(self.request, resume):
-            return Response(
+            return response.Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
-                status=HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN
             )
         return ReferenceModel.objects.filter(resume_id=resume.id)
 
@@ -35,16 +33,14 @@ class GetReferenceDetailsAPIView(CustomRetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not request.user.check_object_permissions(request, instance):
-            return Response(
+            return response.Response(
                 {
                     'detail': 'You don\'t have permission to perform this action.'
                 },
-                status=HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN
             )
-        return Response(
-            self.serializer_class(instance).data,
-            status=HTTP_200_OK
-        )
+        serializer = self.serializer_class(instance)
+        return response.Response(serializer.data)
 
 
 class CreateReferenceAPIView(CustomCreateAPIView):
@@ -60,9 +56,9 @@ class CreateReferenceAPIView(CustomCreateAPIView):
         serializer.save(
             created_by=request.user,
         )
-        return Response(
+        return response.Response(
             serializer.data,
-            status=HTTP_200_OK
+            status=status.HTTP_201_CREATED
         )
 
 
@@ -78,7 +74,26 @@ class UpdateReferenceDetailsAPIView(CustomUpdateAPIView):
         serializer.save(
             updated_by=request.user,
         )
-        return Response(
+        return response.Response(
             serializer.data,
-            status=HTTP_200_OK
+            status=status.HTTP_200_OK
+        )
+
+
+class DestroyReferenceAPIView(CustomDestroyAPIView):
+    queryset = ReferenceModel.objects.all()
+    serializer_class = ReferenceModelSerializer.List
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not request.user.check_object_permissions(request, instance):
+            return response.Response(
+                {
+                    'detail': 'You don\'t have permission to perform this action.'
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+        instance.delete()
+        return response.Response(
+            status=status.HTTP_204_NO_CONTENT
         )

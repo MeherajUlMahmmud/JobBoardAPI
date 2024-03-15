@@ -12,6 +12,7 @@ from resume_control.views.contact import (
 )
 from resume_control.views.education import (
     GetEducationListAPIView, GetEducationDetailsAPIView, CreateEducationAPIView, UpdateEducationDetailsAPIView,
+    DestroyEducationAPIView,
 )
 from resume_control.views.experience import (
     GetExperienceListAPIView, GetExperienceDetailsAPIView, CreateExperienceAPIView, UpdateExperienceDetailsAPIView,
@@ -28,12 +29,14 @@ from resume_control.views.personal import (
 )
 from resume_control.views.reference import (
     CreateReferenceAPIView, GetReferenceListAPIView, GetReferenceDetailsAPIView, UpdateReferenceDetailsAPIView,
+    DestroyReferenceAPIView,
 )
 from resume_control.views.resume import (
     GetResumeListAPIView, CreateResumeAPIView, GetResumeDetailsAPIView, DestroyResumeAPIView, UpdateResumeAPIView,
+    GetResumePreviewAPIView,
 )
 from resume_control.views.skill import (
-    CreateSkillAPIView, GetSkillListAPIView, GetSkillDetailsAPIView, UpdateSkillDetailsAPIView,
+    CreateSkillAPIView, GetSkillListAPIView, GetSkillDetailsAPIView, UpdateSkillDetailsAPIView, DestroySkillAPIView,
 )
 
 urlpatterns = [
@@ -41,6 +44,7 @@ urlpatterns = [
     path('resume/list/', GetResumeListAPIView.as_view()),
     path('resume/create/', CreateResumeAPIView.as_view(), name='create_resume'),
     path('resume/<str:pk>/details/', GetResumeDetailsAPIView.as_view(), name='get_resume_details'),
+    path('resume/<str:pk>/preview/', GetResumePreviewAPIView.as_view(), name='get_resume_preview'),
     path('resume/<str:pk>/update/', UpdateResumeAPIView.as_view(), name='update_resume'),
     path('resume/<str:pk>/destroy/', DestroyResumeAPIView.as_view(), name='destroy_resume'),
 
@@ -64,12 +68,14 @@ urlpatterns = [
     path('education/<str:resume_id>/list/', GetEducationListAPIView.as_view(), name='get_education_list'),
     path('education/<str:pk>/details/', GetEducationDetailsAPIView.as_view(), name='get_education_details'),
     path('education/<str:pk>/update/', UpdateEducationDetailsAPIView.as_view(), name='update_education_details'),
+    path('education/<str:pk>/destroy/', DestroyEducationAPIView.as_view(), name='destroy_education_details'),
 
     # Skill URLs
     path('skill/create/', CreateSkillAPIView.as_view(), name='create_skill_list'),
     path('skill/<str:resume_id>/list/', GetSkillListAPIView.as_view(), name='get_skill_list'),
     path('skill/<str:pk>/details/', GetSkillDetailsAPIView.as_view(), name='get_skill_details'),
     path('skill/<str:pk>/update/', UpdateSkillDetailsAPIView.as_view(), name='update_skill_details'),
+    path('skill/<str:pk>/destroy/', DestroySkillAPIView.as_view(), name='destroy_skill_details'),
 
     # Language URLs
     path('language/create/', CreateLanguageAPIView.as_view(), name='create_language_list'),
@@ -88,6 +94,7 @@ urlpatterns = [
     path('reference/<str:resume_id>/list/', GetReferenceListAPIView.as_view(), name='get_reference_list'),
     path('reference/<str:pk>/details/', GetReferenceDetailsAPIView.as_view(), name='get_reference_details'),
     path('reference/<str:pk>/update/', UpdateReferenceDetailsAPIView.as_view(), name='update_reference_details'),
+    path('reference/<str:pk>/destroy/', DestroyReferenceAPIView.as_view(), name='destroy_reference_details'),
 
     # Certification URLs
     path('certification/create/', CreateCertificationAPIView.as_view(), name='create_certification_list'),

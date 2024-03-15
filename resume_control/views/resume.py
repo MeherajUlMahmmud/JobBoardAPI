@@ -39,6 +39,21 @@ class GetResumeDetailsAPIView(CustomRetrieveAPIView):
         }, status=status.HTTP_200_OK)
 
 
+class GetResumePreviewAPIView(CustomRetrieveAPIView):
+    queryset = ResumeModel.objects.all()
+    serializer_class = ResumeModelSerializer.Preview
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not request.user.check_object_permissions(request, instance):
+            return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
+
+        resume_data = ResumeModelSerializer.Preview(instance).data
+        return Response(
+            resume_data
+        , status=status.HTTP_200_OK)
+
+
 class CreateResumeAPIView(CustomCreateAPIView):
     serializer_class = ResumeModelSerializer.Write
     queryset = ResumeModel.objects.all()
