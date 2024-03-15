@@ -12,6 +12,7 @@ class LanguageModelSerializerMeta(ModelSerializer):
             'name',
             'proficiency',
             'description',
+            'serial',
         ]
 
 

@@ -81,6 +81,7 @@ class ExperienceModel(BaseModel):
     description = models.TextField(null=True, blank=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     company_website = models.CharField(max_length=255, null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'experience'
@@ -103,6 +104,7 @@ class EducationModel(BaseModel):
     is_current = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'education'
@@ -122,6 +124,7 @@ class SkillModel(BaseModel):
         default=SkillProficiencyLevelChoices.BEGINNER,
     )
     description = models.TextField(null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'skills'
@@ -141,6 +144,7 @@ class LanguageModel(BaseModel):
         default=LanguageProficiencyLevelChoices.BASIC,
     )
     description = models.TextField(null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'languages'
@@ -156,6 +160,7 @@ class InterestModel(BaseModel):
     resume = models.ForeignKey(ResumeModel, on_delete=models.CASCADE, related_name='interest')
     name = models.CharField(max_length=255, null=False, blank=False)
     description = models.TextField(null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'interests'
@@ -176,6 +181,7 @@ class ReferenceModel(BaseModel):
     position = models.CharField(max_length=255, null=False, blank=False)
     description = models.TextField(null=True, blank=True)
     portfolio = models.URLField(max_length=255, null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'references'
@@ -192,6 +198,7 @@ class AwardModel(BaseModel):
     title = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     link = models.URLField(max_length=255, null=True, blank=True)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'awards'
@@ -210,6 +217,7 @@ class CertificationModel(BaseModel):
     link = models.URLField(max_length=255, null=True, blank=True)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
+    serial = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         db_table = 'certifications'

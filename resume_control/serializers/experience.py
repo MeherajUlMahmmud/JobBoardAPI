@@ -18,6 +18,7 @@ class ExperienceModelSerializerMeta(ModelSerializer):
             'description',
             'salary',
             'company_website',
+            'serial',
         ]
 
 

@@ -1,4 +1,6 @@
-from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import (
+    ModelSerializer, CharField, ValidationError,
+)
 
 from resume_control.models import *
 
@@ -18,6 +20,7 @@ class EducationModelSerializerMeta(ModelSerializer):
             'is_current',
             'end_date',
             'description',
+            'serial',
         ]
 
 
@@ -41,4 +44,20 @@ class EducationModelSerializer:
         def validate(self, attrs):
             if attrs['resume'].user.id != self.context['request'].user.id:
                 raise ValidationError('You are not allowed to create award for this resume.')
+            return attrs
+
+    class UpdateSerial(EducationModelSerializerMeta):
+        new_serial = CharField(required=True, write_only=True)
+
+        class Meta(EducationModelSerializerMeta.Meta):
+            fields = [
+                'new_serial',
+            ]
+
+        def validate(self, attrs):
+            new_serial = attrs['new_serial']
+            if not new_serial.isdigit():
+                raise ValidationError('New serial must be a number.')
+            if self.instance.serial == attrs['new_serial']:
+                raise ValidationError('New serial can not be same as old serial.')
             return attrs

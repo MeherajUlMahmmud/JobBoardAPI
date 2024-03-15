@@ -49,9 +49,19 @@ class GetResumePreviewAPIView(CustomRetrieveAPIView):
             return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
 
         resume_data = ResumeModelSerializer.Preview(instance).data
+        # sort all the inner list according to the serial
+        resume_data['education'] = sorted(resume_data['education'], key=lambda x: x['serial'])
+        resume_data['experience'] = sorted(resume_data['experience'], key=lambda x: x['serial'])
+        resume_data['skill'] = sorted(resume_data['skill'], key=lambda x: x['serial'])
+        resume_data['language'] = sorted(resume_data['language'], key=lambda x: x['serial'])
+        resume_data['interest'] = sorted(resume_data['interest'], key=lambda x: x['serial'])
+        resume_data['award'] = sorted(resume_data['award'], key=lambda x: x['serial'])
+        resume_data['certification'] = sorted(resume_data['certification'], key=lambda x: x['serial'])
+        resume_data['reference'] = sorted(resume_data['reference'], key=lambda x: x['serial'])
+
         return Response(
-            resume_data
-        , status=status.HTTP_200_OK)
+            resume_data,
+            status=status.HTTP_200_OK)
 
 
 class CreateResumeAPIView(CustomCreateAPIView):

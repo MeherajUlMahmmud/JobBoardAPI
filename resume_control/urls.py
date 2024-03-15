@@ -12,7 +12,7 @@ from resume_control.views.contact import (
 )
 from resume_control.views.education import (
     GetEducationListAPIView, GetEducationDetailsAPIView, CreateEducationAPIView, UpdateEducationDetailsAPIView,
-    DestroyEducationAPIView,
+    UpdateSerialAPIView, DestroyEducationAPIView,
 )
 from resume_control.views.experience import (
     GetExperienceListAPIView, GetExperienceDetailsAPIView, CreateExperienceAPIView, UpdateExperienceDetailsAPIView,
@@ -68,6 +68,7 @@ urlpatterns = [
     path('education/<str:resume_id>/list/', GetEducationListAPIView.as_view(), name='get_education_list'),
     path('education/<str:pk>/details/', GetEducationDetailsAPIView.as_view(), name='get_education_details'),
     path('education/<str:pk>/update/', UpdateEducationDetailsAPIView.as_view(), name='update_education_details'),
+    path('education/<str:pk>/update-serial/', UpdateSerialAPIView.as_view(), name='update_education_serial'),
     path('education/<str:pk>/destroy/', DestroyEducationAPIView.as_view(), name='destroy_education_details'),
 
     # Skill URLs

@@ -14,6 +14,7 @@ class CertificationModelSerializerMeta(ModelSerializer):
             'link',
             'start_date',
             'end_date',
+            'serial',
         ]
 
 

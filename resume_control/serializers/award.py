@@ -12,6 +12,7 @@ class AwardModelSerializerMeta(ModelSerializer):
             'title',
             'description',
             'link',
+            'serial',
         ]
 
 

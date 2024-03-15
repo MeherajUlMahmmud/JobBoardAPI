@@ -29,7 +29,7 @@ class GetEducationListAPIView(CustomListAPIView):
                 },
                 status=status.HTTP_403_FORBIDDEN
             )
-        return EducationModel.objects.filter(resume_id=resume.id)
+        return EducationModel.objects.filter(resume_id=resume.id).order_by('serial')
 
 
 class GetEducationDetailsAPIView(CustomRetrieveAPIView):
@@ -79,6 +79,41 @@ class UpdateEducationDetailsAPIView(CustomUpdateAPIView):
         data = request.data
         serializer = self.serializer_class(data=data, context={'request': request}, instance=instance)
         serializer.is_valid(raise_exception=True)
+        serializer.save(
+            updated_by=request.user,
+        )
+        return response.Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class UpdateSerialAPIView(CustomUpdateAPIView):
+    serializer_class = EducationModelSerializer.UpdateSerial
+    queryset = EducationModel.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not request.user.check_object_permissions(request, instance):
+            return response.Response(
+                {
+                    'detail': 'You don\'t have permission to perform this action.'
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+        data = request.data
+        print(data)
+        new_serial = int(data['new_serial'])
+        serializer = self.serializer_class(data=data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        resume = instance.resume
+        education_list = list(EducationModel.objects.filter(resume_id=resume.id).order_by('serial'))
+        education_list.remove(instance)
+        education_list.insert(new_serial - 1, instance)
+        for index, education in enumerate(education_list):
+            education.serial = index + 1
+            education.save()
+
         serializer.save(
             updated_by=request.user,
         )

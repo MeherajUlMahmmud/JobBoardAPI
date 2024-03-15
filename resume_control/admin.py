@@ -96,6 +96,7 @@ class ExperienceModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'start_date',
         'end_date',
         'is_current',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -109,6 +110,7 @@ class ExperienceModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'company_name', 'position', 'type',
             'start_date', 'end_date', 'is_current',
             'description', 'salary', 'company_website',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
@@ -125,6 +127,7 @@ class EducationModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'start_date',
         'end_date',
         'is_current',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -138,6 +141,7 @@ class EducationModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'grade_scale', 'grade',
             'start_date', 'end_date', 'is_current',
             'description',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
@@ -150,6 +154,7 @@ class SkillModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'resume',
         'name',
         'proficiency',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -161,6 +166,7 @@ class SkillModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'resume',
             'name', 'proficiency',
             'description',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')}),
@@ -173,6 +179,7 @@ class LanguageModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'resume',
         'name',
         'proficiency',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -184,6 +191,7 @@ class LanguageModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'resume',
             'name', 'proficiency',
             'description',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')})
@@ -195,6 +203,7 @@ class InterestModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
     list_display = [
         'resume',
         'name',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -205,6 +214,7 @@ class InterestModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'resume',
             'name',
             'description',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')})
@@ -218,6 +228,7 @@ class ReferenceModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'name',
         'company_name',
         'position',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -229,6 +240,7 @@ class ReferenceModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'name', 'company_name', 'position',
             'phone', 'email',
             'description', 'portfolio',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')})
@@ -240,6 +252,7 @@ class AwardModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
     list_display = [
         'resume',
         'title',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -250,6 +263,7 @@ class AwardModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'resume',
             'title', 'link',
             'description',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')})
@@ -262,6 +276,7 @@ class CertificationModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
         'resume',
         'title',
         'start_date',
+        'serial',
     ]
     list_filter = [
         'resume',
@@ -272,8 +287,8 @@ class CertificationModelAdmin(ImportExportModelAdmin, RawIdFieldsAdmin):
             'resume',
             'title', 'start_date', 'end_date',
             'description', 'link',
+            'serial',
         )}),
         ('Status', {'fields': ('is_active', 'is_deleted')}),
         ('History', {'fields': ('created_at', 'updated_at', 'created_by', 'updated_by')})
     )
-

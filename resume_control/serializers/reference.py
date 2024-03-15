@@ -15,7 +15,8 @@ class ReferenceModelSerializerMeta(ModelSerializer):
             'company_name',
             'position',
             'description',
-            'portfolio'
+            'portfolio',
+            'serial',
         ]
 
 

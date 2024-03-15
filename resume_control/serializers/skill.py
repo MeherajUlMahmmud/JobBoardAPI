@@ -12,6 +12,7 @@ class SkillModelSerializerMeta(ModelSerializer):
             'name',
             'proficiency',
             'description',
+            'serial',
         ]
 
 

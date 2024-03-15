@@ -11,6 +11,7 @@ class InterestModelSerializerMeta(ModelSerializer):
             'resume',
             'name',
             'description',
+            'serial',
         ]
 
 
