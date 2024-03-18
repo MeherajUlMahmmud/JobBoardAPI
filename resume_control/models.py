@@ -34,7 +34,7 @@ class PersonalModel(BaseModel):
     first_name = models.CharField(max_length=255, null=False, blank=False)
     last_name = models.CharField(max_length=255, null=False, blank=False)
     about_me = models.TextField(null=True, blank=True)
-    resume_picture = models.ImageField(upload_to='resume_picture/', null=True, blank=True)
+    resume_picture = models.TextField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)

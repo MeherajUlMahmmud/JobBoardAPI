@@ -131,7 +131,7 @@ class ApplicantModel(BaseModel):
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='applicant')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
+    profile_picture = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:

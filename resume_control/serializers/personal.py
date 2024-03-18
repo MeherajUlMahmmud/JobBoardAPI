@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ImageField
 
 from resume_control.models import PersonalModel
 
@@ -35,3 +35,11 @@ class PersonalModelSerializer:
     class Write(PersonalModelSerializerMeta):
         class Meta(PersonalModelSerializerMeta.Meta):
             fields = PersonalModelSerializerMeta.Meta.fields
+
+    class UpdateImage(PersonalModelSerializerMeta):
+        resume_picture = ImageField(required=True)
+
+        class Meta(PersonalModelSerializerMeta.Meta):
+            fields = [
+                'resume_picture',
+            ]

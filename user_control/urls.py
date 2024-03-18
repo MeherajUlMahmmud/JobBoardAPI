@@ -2,6 +2,7 @@ from django.urls import path
 
 from user_control.views.applicant import (
     GetApplicantListAPIView, GetApplicantDetailsAPIView, UpdateApplicantDetailsAPIView,
+    UpdateApplicantProfilePictureAPIView,
 )
 from user_control.views.organization import (
     GetOrganizationListAPIView, GetOrganizationDetailsAPIView, UpdateOrganizationDetailsAPIView,
@@ -22,6 +23,7 @@ urlpatterns = [
     path('applicant/', GetApplicantListAPIView.as_view(), name='get_applicant_list'),
     path('applicant/<str:pk>/details/', GetApplicantDetailsAPIView.as_view(), name='get_applicant_details'),
     path('applicant/<str:pk>/update/', UpdateApplicantDetailsAPIView.as_view(), name='update_applicant_details'),
+    path('applicant/<str:pk>/update-profile-picture/', UpdateApplicantProfilePictureAPIView.as_view(), name='update_applicant_profile_picture'),
 
     # Organization URLs
     path('organization/', GetOrganizationListAPIView.as_view(), name='get_organization_list'),

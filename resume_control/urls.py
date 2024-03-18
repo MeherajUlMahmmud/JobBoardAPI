@@ -25,7 +25,7 @@ from resume_control.views.language import (
     CreateLanguageAPIView, GetLanguageListAPIView, GetLanguageDetailsAPIView, UpdateLanguageDetailsAPIView,
 )
 from resume_control.views.personal import (
-    GetPersonalDetailsAPIView, UpdatePersonalDetailsAPIView,
+    GetPersonalDetailsAPIView, UpdatePersonalDetailsAPIView, UpdatePersonalImageAPIView,
 )
 from resume_control.views.reference import (
     CreateReferenceAPIView, GetReferenceListAPIView, GetReferenceDetailsAPIView, UpdateReferenceDetailsAPIView,
@@ -51,6 +51,7 @@ urlpatterns = [
     # Personal URLs
     path('personal/<str:resume_id>/details/', GetPersonalDetailsAPIView.as_view(), name='get_personal_details'),
     path('personal/<str:pk>/update/', UpdatePersonalDetailsAPIView.as_view(), name='update_personal_details'),
+    path('personal/<str:pk>/update-image/', UpdatePersonalImageAPIView.as_view(), name='update_personal_image'),
 
     # Contact URLs
     path('contact/<str:resume_id>/details/', GetContactDetailsAPIView.as_view(), name='get_contact_details'),

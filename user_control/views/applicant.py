@@ -2,12 +2,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 from common.custom_permissions import AdminOrStaffUserPermission
 from common.custom_view import (
     CustomUpdateAPIView, CustomRetrieveAPIView, CustomListAPIView,
 )
+from common.utils import save_picture_to_folder
 from user_control.custom_filters import ApplicantModelFilter
 from user_control.models import ApplicantModel
 from user_control.serializers.applicant import ApplicantModelSerializer
@@ -40,13 +41,10 @@ class UpdateApplicantDetailsAPIView(CustomUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        requested_user = request.user
-        print(requested_user.id)
-        print(instance.user.id)
-        # if not request.user.check_object_permissions(request, instance) or not requested_user.id == instance.user.id:
-        #     return Response({
-        #         'detail': 'You don\'t have permission to perform this action.'
-        #     }, status=HTTP_403_FORBIDDEN)
+        if instance.user != request.user:
+            return Response({
+                'detail': 'You do not have permission to perform this action.'
+            }, status=HTTP_403_FORBIDDEN)
 
         data = request.data
         serializer = self.serializer_class(
@@ -60,3 +58,29 @@ class UpdateApplicantDetailsAPIView(CustomUpdateAPIView):
             serializer.data,
             status=HTTP_200_OK
         )
+
+
+class UpdateApplicantProfilePictureAPIView(CustomUpdateAPIView):
+    queryset = ApplicantModel.objects.filter(is_active=True, is_deleted=False)
+    serializer_class = ApplicantModelSerializer.UpdateProfilePicture
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        requested_user = request.user
+        if instance.user != requested_user:
+            return Response({
+                'detail': 'You do not have permission to perform this action.'
+            }, status=HTTP_403_FORBIDDEN)
+
+        data = request.data
+        serializer = self.serializer_class(instance, data=data)
+        if serializer.is_valid():
+            profile_picture = request.FILES.get('profile_picture')
+            picture_path = save_picture_to_folder(profile_picture, 'profile_pictures')
+            serializer.validated_data['profile_picture'] = picture_path
+            serializer.save(
+                updated_by=request.user,
+            )
+            return Response({
+                'profile_picture': picture_path,
+            }, status=HTTP_200_OK)

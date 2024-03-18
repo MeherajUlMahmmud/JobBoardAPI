@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ImageField
 
 from user_control.models import ApplicantModel
 from user_control.serializers.user import UserModelSerializer
@@ -42,3 +42,10 @@ class ApplicantModelSerializer:
     class Write(ApplicantModelSerializerMeta):
         class Meta(ApplicantModelSerializerMeta.Meta):
             fields = ApplicantModelSerializerMeta.Meta.fields
+
+    class UpdateProfilePicture(ApplicantModelSerializerMeta):
+        profile_picture = ImageField(required=True)
+        class Meta(ApplicantModelSerializerMeta.Meta):
+            fields = [
+                'profile_picture',
+            ]

@@ -49,19 +49,50 @@ class GetResumePreviewAPIView(CustomRetrieveAPIView):
             return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
 
         resume_data = ResumeModelSerializer.Preview(instance).data
-        # sort all the inner list according to the serial
-        resume_data['education'] = sorted(resume_data['education'], key=lambda x: x['serial'])
-        resume_data['experience'] = sorted(resume_data['experience'], key=lambda x: x['serial'])
-        resume_data['skill'] = sorted(resume_data['skill'], key=lambda x: x['serial'])
-        resume_data['language'] = sorted(resume_data['language'], key=lambda x: x['serial'])
-        resume_data['interest'] = sorted(resume_data['interest'], key=lambda x: x['serial'])
-        resume_data['award'] = sorted(resume_data['award'], key=lambda x: x['serial'])
-        resume_data['certification'] = sorted(resume_data['certification'], key=lambda x: x['serial'])
-        resume_data['reference'] = sorted(resume_data['reference'], key=lambda x: x['serial'])
+        # sort all the inner list according to the serial and filter out the inactive and deleted items
+        resume_data['education'] = sorted(
+            [education for education in resume_data['education'] if
+             education['is_active'] and not education['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['experience'] = sorted(
+            [experience for experience in resume_data['experience'] if
+             experience['is_active'] and not experience['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['skill'] = sorted(
+            [skill for skill in resume_data['skill'] if
+             skill['is_active'] and not skill['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['language'] = sorted(
+            [language for language in resume_data['language'] if
+             language['is_active'] and not language['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['interest'] = sorted(
+            [interest for interest in resume_data['interest'] if
+             interest['is_active'] and not interest['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['award'] = sorted(
+            [award for award in resume_data['award'] if
+             award['is_active'] and not award['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['certification'] = sorted(
+            [certification for certification in resume_data['certification'] if
+             certification['is_active'] and not certification['is_deleted']],
+            key=lambda x: x['serial']
+        )
+        resume_data['reference'] = sorted(
+            [reference for reference in resume_data['reference'] if
+             reference['is_active'] and not reference['is_deleted']],
+            key=lambda x: x['serial']
+        )
 
-        return Response(
-            resume_data,
-            status=status.HTTP_200_OK)
+        return Response(resume_data,
+                        status=status.HTTP_200_OK)
 
 
 class CreateResumeAPIView(CustomCreateAPIView):
