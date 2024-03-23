@@ -40,7 +40,9 @@ class ExperienceModelSerializer:
         position = CharField(max_length=255, required=True)
 
         class Meta(ExperienceModelSerializerMeta.Meta):
-            fields = ExperienceModelSerializerMeta.Meta.fields
+            fields = ExperienceModelSerializerMeta.Meta.fields + [
+                'id',
+            ]
 
         def validate(self, attrs):
             if attrs['resume'].user.id != self.context['request'].user.id:
