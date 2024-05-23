@@ -2,7 +2,7 @@ from rest_framework import response, status
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from common.custom_view import CustomRetrieveAPIView, CustomUpdateAPIView
-from common.utils import save_picture_to_folder
+from common.utils import save_file_to_folder
 from resume_control.models import PersonalModel
 from resume_control.serializers.personal import PersonalModelSerializer
 
@@ -64,7 +64,7 @@ class UpdatePersonalImageAPIView(CustomUpdateAPIView):
             resume_picture_file = request.FILES['resume_picture']
             content_type = resume_picture_file.content_type
             if content_type == 'image/jpeg' or content_type == 'image/png':
-                picture_path = save_picture_to_folder(resume_picture_file, 'resume_pictures')
+                picture_path = save_file_to_folder(resume_picture_file, 'resume_pictures')
                 serializer.validated_data['resume_picture'] = picture_path
                 serializer.save(
                     updated_by=request.user
