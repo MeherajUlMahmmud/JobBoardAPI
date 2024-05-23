@@ -5,7 +5,7 @@ from datetime import datetime
 from django.conf import settings
 
 
-def save_picture_to_folder(picture_file, folder_name):
+def save_file_to_folder(picture_file, folder_name):
     storage_type = settings.STORAGE_TYPE
 
     if storage_type == 'local':
