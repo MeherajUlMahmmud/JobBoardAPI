@@ -31,6 +31,8 @@ from .serializers import (
 )
 from .utils import Util
 
+import logging
+
 
 class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
@@ -57,12 +59,16 @@ class RegisterAPIView(GenericAPIView):
             is_organization = data.get('is_organization')
 
             if is_applicant:
-                user = UserModel.objects.create_applicant(email=email, password=password)
-                applicant = ApplicantModel.objects.create(user=user, first_name=first_name, last_name=last_name)
+                user = UserModel.objects.create_applicant(
+                    email=email, password=password)
+                applicant = ApplicantModel.objects.create(
+                    user=user, first_name=first_name, last_name=last_name)
                 applicant.save()
             elif is_organization:
-                user = UserModel.objects.create_organization(email=email, password=password)
-                organization = OrganizationModel.objects.create(user=user, name=name)
+                user = UserModel.objects.create_organization(
+                    email=email, password=password)
+                organization = OrganizationModel.objects.create(
+                    user=user, name=name)
                 organization.save()
 
             # name = applicant.first_name + " " + applicant.last_name if is_applicant else organization.name
@@ -106,7 +112,8 @@ class VerifyEmailAPIView(APIView):
     def get(self, request):
         token = request.GET.get('token')
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=['HS256'])
             user = get_object_or_404(UserModel, id=payload['user_id'])
 
             if not user.is_verified:
@@ -141,14 +148,17 @@ class ResendVerificationEmailAPIView(APIView):
         if user.is_applicant:
             applicant = ApplicantModel.objects.get(user=user, created_by=user)
         elif user.is_organization:
-            organization = OrganizationModel.objects.get(user=user, created_by=user)
+            organization = OrganizationModel.objects.get(
+                user=user, created_by=user)
 
-        name = applicant.first_name + " " + applicant.last_name if user.is_applicant else organization.name
+        name = (applicant.first_name + " " +
+                applicant.last_name if user.is_applicant else organization.name)
         token = RefreshToken.for_user(user).access_token
 
         current_site = get_current_site(request).domain
         relative_link = reverse('verify-email')
-        abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
+        abs_url = 'http://' + current_site + \
+            relative_link + "?token=" + str(token)
 
         email_subject = 'Verify your email'
         email_body = "Hi " + name + ",\nUse this link to verify your email:\n" + abs_url
@@ -167,6 +177,8 @@ class LoginAPIView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
+        logging.info("LoginAPIView")
+        logging.info(request.data)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -213,7 +225,8 @@ class RequestPasswordResetAPIView(GenericAPIView):
 
         user = get_object_or_404(UserModel, email=email)
 
-        u_id_b64 = urlsafe_base64_encode(smart_bytes(user.id) + smart_bytes('||') + smart_bytes(user.email))
+        u_id_b64 = urlsafe_base64_encode(smart_bytes(
+            user.id) + smart_bytes('||') + smart_bytes(user.email))
         token = PasswordResetTokenGenerator().make_token(user)
 
         user.reset_password_token = token

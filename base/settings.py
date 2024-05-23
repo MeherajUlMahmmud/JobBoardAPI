@@ -23,15 +23,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 MAX_UPLOAD_SIZE = 5242880  # 5MB
 
 CSRF_TRUSTED_ORIGINS = [
-    # 'https://api.pristinefacilities.au',
-    # 'https://www.api.pristinefacilities.au',
 ]
 
 ALLOWED_HOSTS = [
     '*', 'localhost',
-    # '54.206.214.24',
-    # 'api.pristinefacilities.au',
-    # 'www.api.pristinefacilities.au',
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -39,10 +34,6 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:8000',
-    # 'https://www.pristinefacilities.au',
-    # 'https://pristinefacilities.au',
-    # 'https://www.api.pristinefacilities.au',
-    # 'https://api.pristinefacilities.au',
 ]
 
 # Application definition
@@ -174,6 +165,38 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

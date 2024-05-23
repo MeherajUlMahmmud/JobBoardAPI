@@ -8,7 +8,7 @@ from common.custom_permissions import AdminOrStaffUserPermission
 from common.custom_view import (
     CustomUpdateAPIView, CustomRetrieveAPIView, CustomListAPIView,
 )
-from common.utils import save_picture_to_folder
+from common.utils import save_file_to_folder
 from user_control.custom_filters import ApplicantModelFilter
 from user_control.models import ApplicantModel
 from user_control.serializers.applicant import ApplicantModelSerializer
@@ -20,7 +20,8 @@ class GetApplicantListAPIView(CustomListAPIView):
     serializer_class = ApplicantModelSerializer.List
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = ApplicantModelFilter
-    search_fields = ['user__username', 'user__email', 'first_name', 'last_name']
+    search_fields = ['user__username',
+                     'user__email', 'first_name', 'last_name']
 
 
 class GetApplicantDetailsAPIView(CustomRetrieveAPIView):
@@ -76,7 +77,8 @@ class UpdateApplicantProfilePictureAPIView(CustomUpdateAPIView):
         serializer = self.serializer_class(instance, data=data)
         if serializer.is_valid():
             profile_picture = request.FILES.get('profile_picture')
-            picture_path = save_picture_to_folder(profile_picture, 'profile_pictures')
+            picture_path = save_file_to_folder(
+                profile_picture, 'profile_pictures')
             serializer.validated_data['profile_picture'] = picture_path
             serializer.save(
                 updated_by=request.user,
